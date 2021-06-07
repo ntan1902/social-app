@@ -55,6 +55,7 @@ function Sidebar() {
         </ul>
 
         <button className="sidebarButton">Show More</button>
+
         <hr className="sidebarHr" />
 
         <ul className="sidebarFriendList">
