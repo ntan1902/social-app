@@ -1,8 +1,7 @@
 package com.socialapp.backend.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.socialapp.backend.post.entity.Post;
 import lombok.*;
 
 import javax.persistence.*;
@@ -50,7 +49,6 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private Relationship relationship;
 
-//    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followers")
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -68,5 +66,20 @@ public class User {
     @JsonIgnore
     private Set<User> followers;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<Post> posts;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    @JoinTable(
+            name = "like_post",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private Set<Post> likedPosts;
 }
