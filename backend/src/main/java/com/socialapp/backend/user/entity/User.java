@@ -1,38 +1,72 @@
 package com.socialapp.backend.user.entity;
 
-import lombok.Data;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @Table(name="user")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "username", unique = true)
-    @Required
     private String username;
 
     @Column(name = "password")
-    @Required
     private String password;
 
     @Column(name = "email")
     private String email;
 
-//    @Column(name = "profile_picture")
-//    private String profilePicture;
-//
-//    @Column(name = "cover_picture")
-//    private String coverPicture;
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
-//    @ManyToMany
-//    private List<User> followings;
+    @Column(name = "cover_picture")
+    private String coverPicture;
+
+    @Column(name = "description")
+    private String desc;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "from_city")
+    private String from;
+
+//    @Column(name = "is_admin")
+//    private Boolean isAdmin;
+
+    @Column(name = "relationship")
+    @Enumerated(EnumType.ORDINAL)
+    private Relationship relationship;
+
+//    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "followers")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    @JoinTable(
+            name = "follow",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private Set<User> followings;
+
+    @ManyToMany(mappedBy = "followings")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<User> followers;
+
+
 }

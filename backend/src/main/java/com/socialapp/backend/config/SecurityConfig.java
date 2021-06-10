@@ -3,7 +3,6 @@ package com.socialapp.backend.config;
 import com.socialapp.backend.jwt.JwtAuthenticationFilter;
 import com.socialapp.backend.user.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,8 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login").permitAll()
-                .anyRequest().authenticated()
+//                .antMatchers("/api/auth/login").permitAll()
+//                .antMatchers("/api/auth/register").permitAll()
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
