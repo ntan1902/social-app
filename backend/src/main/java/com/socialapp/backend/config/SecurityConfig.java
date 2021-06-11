@@ -46,10 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-//                .antMatchers("/api/auth/login").permitAll()
-//                .antMatchers("/api/auth/register").permitAll()
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
+                // .antMatchers("/api/auth/login").permitAll()
+                // .antMatchers("/api/auth/register").permitAll()
+                // .anyRequest().authenticated()
+               .anyRequest().permitAll()
                 .and();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
