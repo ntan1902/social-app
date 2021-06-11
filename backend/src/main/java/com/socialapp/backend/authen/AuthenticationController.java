@@ -1,10 +1,11 @@
 package com.socialapp.backend.authen;
 
 import com.socialapp.backend.jwt.JwtTokenProvider;
-import com.socialapp.backend.user.entity.CustomUserDetails;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.dto.CustomUserDetails;
+import com.socialapp.backend.user.dto.User;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,15 +20,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Log4j2
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -36,30 +37,28 @@ public class AuthenticationController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
-        return new LoginResponse(jwt);
+        String jwt = null;
+        try {
+            jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return new ResponseEntity<>(jwt, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        String hashedPassword = passwordEncoder.encode(
-                registerRequest.getPassword()
-        );
-
         User newUser = User.builder()
                 .username(registerRequest.getUsername())
-                .password(hashedPassword)
+                .password(
+                        registerRequest.getPassword()
+                )
                 .email(registerRequest.getEmail())
                 .build();
         User res = this.userService.insertUser(newUser);
 
-        if (res != null) {
-            return new ResponseEntity<>(res, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @GetMapping("/hehe")

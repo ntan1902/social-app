@@ -1,4 +1,4 @@
-package com.socialapp.backend.user.entity;
+package com.socialapp.backend.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

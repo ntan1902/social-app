@@ -1,6 +1,7 @@
 package com.socialapp.backend.jwt;
 
 
+import com.socialapp.backend.authen.AuthenticationUserService;
 import com.socialapp.backend.user.service.impl.UserServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider tokenProvider;
 
     @Autowired
-    private UserServiceImpl customUserDetailsService;
+    private AuthenticationUserService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
