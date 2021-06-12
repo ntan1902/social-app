@@ -1,11 +1,12 @@
 package com.socialapp.backend.user.controller;
 
-import com.socialapp.backend.user.dto.User;
+import com.socialapp.backend.user.dto.UserDTO;
+import com.socialapp.backend.user.entity.User;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -15,11 +16,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        User res = this.userService.updateUser(id, user);
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
+        User user = this.convertToEntity(userDTO);
+        UserDTO res = this.convertToDTO(
+                this.userService.updateUser(id, user)
+        );
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -32,21 +36,31 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable("id") Long id) {
-        User user = this.userService.findUserById(id);
-        return new ResponseEntity<>(user, HttpStatus.FOUND);
+        UserDTO userDTO = this.convertToDTO(
+                this.userService.findUserById(id)
+        );
+        return new ResponseEntity<>(userDTO, HttpStatus.FOUND);
     }
 
-//    @PostMapping("/{id}/follow")
-//    public ResponseEntity<?> followUser(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId) {
-//        this.userService.followUser(id, userId.get("id"));
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/{id}/unfollow")
-//    public ResponseEntity<?> unfollowUser(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId) {
-//        this.userService.unfollowUser(id, userId.get("id"));
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<?> followUser(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId) {
+        this.userService.followUser(id, userId.get("id"));
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/unfollow")
+    public ResponseEntity<?> unfollowUser(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId) {
+        this.userService.unfollowUser(id, userId.get("id"));
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private UserDTO convertToDTO(User entity) {
+        return modelMapper.map(entity, UserDTO.class);
+    }
+
+    private User convertToEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
+    }
 }

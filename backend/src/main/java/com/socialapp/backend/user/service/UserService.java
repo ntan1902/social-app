@@ -1,6 +1,6 @@
 package com.socialapp.backend.user.service;
 
-import com.socialapp.backend.user.dto.User;
+import com.socialapp.backend.user.entity.User;
 
 public interface UserService {
     User insertUser(User user);
@@ -11,8 +11,8 @@ public interface UserService {
 
     User findUserById(Long id);
 
+    void followUser(Long id, Long userId);
 
-//    void followUser(Long id, Long userId);
-//
-//    void unfollowUser(Long id, Long userId);
+    void unfollowUser(Long id, Long userId);
+
 }

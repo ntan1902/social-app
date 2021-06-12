@@ -1,18 +1,18 @@
 package com.socialapp.backend.user.dao.impl;
 
 import com.socialapp.backend.user.dao.UserRepository;
-import com.socialapp.backend.user.dto.User;
+import com.socialapp.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,19 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
-
-    @Override
-    public Optional<User> loadUserById(Long id) {
-        String sql = "SELECT * FROM users u WHERE u.id = ?";
-        Object[] params = new Object[]{id};
-
-        try {
-            User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-            return Optional.ofNullable(user);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -54,9 +41,6 @@ public class UserRepositoryImpl implements UserRepository {
 
         try {
             User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-            if (user != null) {
-                user.setPassword(null);
-            }
             return Optional.ofNullable(user);
         } catch (Exception e) {
             return Optional.empty();
@@ -75,12 +59,10 @@ public class UserRepositoryImpl implements UserRepository {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
         try {
-            Number key = simpleJdbcInsert
+            simpleJdbcInsert
                     .withTableName("users")
                     .usingGeneratedKeyColumns("id")
                     .executeAndReturnKey(params);
-            user.setId(key.longValue());
-            user.setPassword(null);
             return Optional.of(user);
         } catch (Exception e) {
             return Optional.empty();
@@ -114,5 +96,38 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "DELETE FROM users u WHERE u.id = ?";
         jdbcTemplate.update(sql, id);
 
+    }
+
+    @Override
+    public List<User> findFollowings(Long id) {
+        String sql = "SELECT followed_user.* " +
+                "FROM users user, `follows` fol, users followed_user " +
+                "WHERE user.id = ? AND user.id = fol.user_id AND followed_user.id = fol.following_id";
+        Object[] params = new Object[]{id};
+
+        try {
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public void insertFollow(Long id, Long userId) {
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("user_id", id)
+                .addValue("following_id", userId);
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+
+        simpleJdbcInsert
+                .withTableName("follows")
+                .execute(params);
+    }
+
+    @Override
+    public void removeFollow(Long id, Long userId) {
+        String sql = "DELETE FROM `follows` WHERE user_id = ? AND following_id = ?";
+        jdbcTemplate.update(sql, id, userId);
     }
 }

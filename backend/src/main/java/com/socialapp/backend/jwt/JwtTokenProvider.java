@@ -1,6 +1,6 @@
 package com.socialapp.backend.jwt;
 
-import com.socialapp.backend.user.dto.CustomUserDetails;
+import com.socialapp.backend.user.entity.CustomUserDetails;
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +20,17 @@ public class JwtTokenProvider {
     public String generateToken(CustomUserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-        return Jwts.builder()
-                .setSubject(Long.toString(userDetails.getUser().getId()))
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
-                .compact();
+        try {
+            return Jwts.builder()
+                    .setSubject(Long.toString(userDetails.getUser().getId()))
+                    .setIssuedAt(now)
+                    .setExpiration(expiryDate)
+                    .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
+                    .compact();
+        } catch(Exception e) {
+            log.error(e);
+            return null;
+        }
     }
 
     public Long getUserIdFromJwt(String token) {

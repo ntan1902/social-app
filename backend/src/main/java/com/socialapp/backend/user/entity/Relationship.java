@@ -1,4 +1,4 @@
-package com.socialapp.backend.user.dto;
+package com.socialapp.backend.user.entity;
 
 public enum Relationship {
     SINGLE,

@@ -1,11 +1,7 @@
 package com.socialapp.backend.post.service.impl;
 
-import com.socialapp.backend.exception.user.UserIdNotFoundException;
 import com.socialapp.backend.post.entity.Post;
-import com.socialapp.backend.post.entity.PostRepository;
 import com.socialapp.backend.post.service.PostService;
-import com.socialapp.backend.user.dto.User;
-import com.socialapp.backend.user.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

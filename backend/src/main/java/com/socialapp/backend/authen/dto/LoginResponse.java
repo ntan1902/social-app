@@ -1,4 +1,4 @@
-package com.socialapp.backend.authen;
+package com.socialapp.backend.authen.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

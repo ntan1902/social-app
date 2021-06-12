@@ -1,12 +1,11 @@
-package com.socialapp.backend.authen;
+package com.socialapp.backend.authen.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RegisterRequest {
+public class LoginRequest {
     private String username;
-    private String email;
     private String password;
 }
