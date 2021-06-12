@@ -13,14 +13,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,30 +31,25 @@ public class UserServiceImpl implements UserService{
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
         );
-        return this.userRepository.insertUser(user);
+        return this.userRepository.insertUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Can't insert user"));
     }
 
-//    @Override
-//    public User updateUser(Long id, User user) {
-//        log.info("Inside updateUser of UserServiceImpl");
-//        this.userRepository.findById(id)
-//                .orElseThrow(() -> new UserIdNotFoundException("Invalid user id"));
-//
-//        User res = this.userRepository.updateUser(user);
-//        res.setPassword(null);
-//        return res;
-//    }
-//
-//    @Override
-//    public void deleteUser(Long id) {
-//        log.info("Inside deleteUser of UserServiceImpl");
-//        if (this.userRepository.existsById(id)) {
-//            this.userRepository.deleteById(id);
-//        } else {
-//            log.error("User id " + id + " not found");
-//            throw new UserIdNotFoundException("Invalid user id");
-//        }
-//    }
+    @Override
+    public User updateUser(Long id, User user) {
+        log.info("Inside updateUser of UserServiceImpl");
+        this.userRepository.findById(id)
+                .orElseThrow(() -> new UserIdNotFoundException("Invalid user id"));
+
+        return this.userRepository.updateUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Can't update user"));
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        log.info("Inside deleteUser of UserServiceImpl");
+        this.userRepository.deleteById(id);
+    }
 
     @Override
     public User findUserById(Long id) {

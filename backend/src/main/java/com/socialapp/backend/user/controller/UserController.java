@@ -16,31 +16,24 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-//        String hashedPassword = passwordEncoder.encode(
-//                user.getPassword()
-//        );
-//        user.setPassword(hashedPassword);
-//
-//        User res = this.userService.updateUser(id, user);
-//
-//        return new ResponseEntity<>(res, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-//        this.userService.deleteUser(id);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
+        User res = this.userService.updateUser(id, user);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        this.userService.deleteUser(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable("id") Long id) {
         User user = this.userService.findUserById(id);
         return new ResponseEntity<>(user, HttpStatus.FOUND);
-
     }
 
 //    @PostMapping("/{id}/follow")

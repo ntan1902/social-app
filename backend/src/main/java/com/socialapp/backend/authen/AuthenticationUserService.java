@@ -25,7 +25,7 @@ public class AuthenticationUserService implements UserDetailsService {
     }
 
     public UserDetails loadUserById(Long userId) {
-        User user = this.userRepository.findById(userId)
+        User user = this.userRepository.loadUserById(userId)
                 .orElseThrow(() -> new UserIdNotFoundException("User id " + userId + " is not found"));
         return new CustomUserDetails(user);
     }

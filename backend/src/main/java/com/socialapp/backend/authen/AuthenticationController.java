@@ -37,13 +37,9 @@ public class AuthenticationController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = null;
-        try {
-            jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        return new ResponseEntity<>(jwt, HttpStatus.ACCEPTED);
+        String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
+
+        return new ResponseEntity<>(new LoginResponse(jwt), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/register")
