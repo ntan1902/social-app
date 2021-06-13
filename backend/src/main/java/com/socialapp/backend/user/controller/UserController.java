@@ -2,9 +2,9 @@ package com.socialapp.backend.user.controller;
 
 import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +16,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
-        User user = this.convertToEntity(userDTO);
-        UserDTO res = this.convertToDTO(
+        User user = this.userMapper.map(userDTO);
+        UserDTO res = this.userMapper.map(
                 this.userService.updateUser(id, user)
         );
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable("id") Long id) {
-        UserDTO userDTO = this.convertToDTO(
+        UserDTO userDTO = this.userMapper.map(
                 this.userService.findUserById(id)
         );
         return new ResponseEntity<>(userDTO, HttpStatus.FOUND);
@@ -54,13 +54,5 @@ public class UserController {
         this.userService.unfollowUser(id, userId.get("id"));
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    private UserDTO convertToDTO(User entity) {
-        return modelMapper.map(entity, UserDTO.class);
-    }
-
-    private User convertToEntity(UserDTO userDTO) {
-        return modelMapper.map(userDTO, User.class);
     }
 }
