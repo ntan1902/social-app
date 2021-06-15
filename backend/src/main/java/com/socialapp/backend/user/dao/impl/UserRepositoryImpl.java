@@ -3,7 +3,6 @@ package com.socialapp.backend.user.dao.impl;
 import com.socialapp.backend.user.dao.UserRepository;
 import com.socialapp.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.*;
@@ -59,10 +58,11 @@ public class UserRepositoryImpl implements UserRepository {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
         try {
-            simpleJdbcInsert
+            Number key = simpleJdbcInsert
                     .withTableName("users")
                     .usingGeneratedKeyColumns("id")
                     .executeAndReturnKey(params);
+            user.setId(key.longValue());
             return Optional.of(user);
         } catch (Exception e) {
             return Optional.empty();
@@ -81,19 +81,18 @@ public class UserRepositoryImpl implements UserRepository {
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        try {
-            int key = template.update(sql, params);
+        int key = template.update(sql, params);
+        if(key != 0) {
             user.setId((long) key);
             return Optional.of(user);
-
-        } catch (Exception e) {
+        } else {
             return Optional.empty();
         }
     }
 
     @Override
     public void deleteById(Long id) {
-        String sql = "DELETE FROM users u WHERE u.id = ?";
+        String sql = "DELETE FROM `users` WHERE id = ?";
         jdbcTemplate.update(sql, id);
 
     }

@@ -1,9 +1,6 @@
 package com.socialapp.backend.user.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -34,6 +31,5 @@ public class User implements Serializable {
 
 //    @Column(name = "is_admin")
 //    private Boolean isAdmin;
-
 
 }
