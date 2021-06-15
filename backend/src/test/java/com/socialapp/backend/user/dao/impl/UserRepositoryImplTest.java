@@ -6,11 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @JdbcTest
 class UserRepositoryImplTest {
@@ -18,7 +21,6 @@ class UserRepositoryImplTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-//    @Autowired
     private UserRepository underTest;
 
     @BeforeEach
@@ -38,11 +40,11 @@ class UserRepositoryImplTest {
 
         // when
         Optional<User> user = underTest.findByUsername("test");
-        Optional<User> empty = underTest.findByUsername("test1");
 
         // then
         assertThat(user.get().getUsername()).isEqualTo("test");
-        assertThat(empty).isEmpty();
+        assertThatThrownBy(() -> underTest.findByUsername("test2"))
+                .isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -51,11 +53,11 @@ class UserRepositoryImplTest {
 
         // when
         Optional<User> user = underTest.findById(1L);
-        Optional<User> empty = underTest.findById(100L);
 
         // then
         assertThat(user.get().getUsername()).isEqualTo("ntan1902");
-        assertThat(empty).isEmpty();
+        assertThatThrownBy(() -> underTest.findById(100L))
+                .isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -86,5 +88,60 @@ class UserRepositoryImplTest {
         // then
         assertThat(optionalUser.get().getUsername()).isEqualTo("annt12");
         assertThat(empty).isEmpty();
+    }
+
+    @Test
+    void test_deleteUser() {
+        // given
+        Optional<User> optionalUser = underTest.findById(1L);
+
+        // when
+        underTest.deleteById(1L);
+
+        // then
+        assertThatThrownBy(() -> underTest.findById(1L))
+                .isInstanceOf(DataAccessException.class);
+
+        // insert
+//        underTest.insertUser(optionalUser.get());
+    }
+
+    @Test
+    void test_findFollowings(){
+        // given
+
+        // when
+        List<User> followings = underTest.findFollowings(1L);
+
+        // then
+        assertThat(followings.get(0).getId()).isEqualTo(2L);
+        assertThat(followings.get(1).getId()).isEqualTo(4L);
+        assertThat(followings.get(2).getId()).isEqualTo(5L);
+
+    }
+
+    @Test
+    void test_insertFollow(){
+        // given
+        underTest.insertFollow(1L, 3L);
+
+        // when
+        List<User> followings = underTest.findFollowings(1L);
+
+        // then
+        assertThat(followings.get(1).getId()).isEqualTo(3L);
+
+    }
+
+    @Test
+    void test_removeFollow(){
+        // given
+        underTest.removeFollow(2L, 1L);
+
+        // when
+        List<User> followings = underTest.findFollowings(2L);
+
+        // then
+        assertThat(followings.size()).isEqualTo(0);
     }
 }

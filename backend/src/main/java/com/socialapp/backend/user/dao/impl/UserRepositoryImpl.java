@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +24,8 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "SELECT * FROM users u WHERE u.username = ?";
         Object[] params = new Object[]{username};
 
-        try {
-            User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-            return Optional.ofNullable(user);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        return Optional.of(user);
     }
 
     @Override
@@ -38,35 +33,22 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "SELECT * FROM users u WHERE u.id = ?";
         Object[] params = new Object[]{id};
 
-        try {
-            User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-            return Optional.ofNullable(user);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        return Optional.of(user);
     }
 
     @Override
     public Optional<User> insertUser(User user) {
-//        String sql = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//
-//        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(user);
-//
-//        jdbcTemplate.update(sql, params);
-
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
-        try {
-            Number key = simpleJdbcInsert
-                    .withTableName("users")
-                    .usingGeneratedKeyColumns("id")
-                    .executeAndReturnKey(params);
-            user.setId(key.longValue());
-            return Optional.of(user);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        Number key = simpleJdbcInsert
+                .withTableName("users")
+                .usingGeneratedKeyColumns("id")
+                .executeAndReturnKey(params);
+
+        user.setId(key.longValue());
+        return Optional.of(user);
     }
 
     @Override
@@ -82,7 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
         NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
 
         int key = template.update(sql, params);
-        if(key != 0) {
+        if (key != 0) {
             user.setId((long) key);
             return Optional.of(user);
         } else {
@@ -94,7 +76,6 @@ public class UserRepositoryImpl implements UserRepository {
     public void deleteById(Long id) {
         String sql = "DELETE FROM `users` WHERE id = ?";
         jdbcTemplate.update(sql, id);
-
     }
 
     @Override
@@ -104,11 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
                 "WHERE user.id = ? AND user.id = fol.user_id AND followed_user.id = fol.following_id";
         Object[] params = new Object[]{id};
 
-        try {
-            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
     }
 
     @Override
@@ -128,5 +105,15 @@ public class UserRepositoryImpl implements UserRepository {
     public void removeFollow(Long id, Long userId) {
         String sql = "DELETE FROM `follows` WHERE user_id = ? AND following_id = ?";
         jdbcTemplate.update(sql, id, userId);
+    }
+
+    @Override
+    public boolean isUserInFollowings(Long id, Long userId) {
+        String sql = "SELECT COUNT(*) FROM `follows` WHERE user_id = ? AND following_id = ?";
+        Object[] params = new Object[]{id, userId};
+
+        Integer num = jdbcTemplate.queryForObject(sql, Integer.class, params);
+
+        return num != 0;
     }
 }

@@ -22,4 +22,6 @@ public interface UserRepository {
     void insertFollow(Long id, Long userId);
 
     void removeFollow(Long id, Long userId);
+
+    boolean isUserInFollowings(Long id, Long userId);
 }

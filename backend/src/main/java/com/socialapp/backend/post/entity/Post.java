@@ -17,15 +17,5 @@ public class Post implements Serializable {
 
     private String img;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    private User user;
-//
-//    @ManyToMany(mappedBy = "likedPosts")
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @JsonIgnore
-//    private Set<User> likedUsers;
+
 }
