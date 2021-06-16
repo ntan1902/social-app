@@ -3,6 +3,7 @@ package com.socialapp.backend.post.entity;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -13,9 +14,14 @@ public class Post implements Serializable {
 
     private Long id;
 
-    private String desc;
+    private Long userId;
+
+    private String description;
 
     private String img;
 
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
 
 }

@@ -10,6 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
         Object[] params = new Object[]{username};
 
         User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-        return Optional.of(user);
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -34,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
         Object[] params = new Object[]{id};
 
         User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
-        return Optional.of(user);
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -115,5 +118,49 @@ public class UserRepositoryImpl implements UserRepository {
         Integer num = jdbcTemplate.queryForObject(sql, Integer.class, params);
 
         return num != 0;
+    }
+
+    @Override
+    public Optional<User> findUserUncheckInjection(String username, String password) {
+
+        String sql =
+                "SELECT * " +
+                        "FROM `users` " +
+                        "WHERE `username`='" + username + "' " +
+                        "AND `password` = '" + password + "'";
+        return Optional.ofNullable(
+                jdbcTemplate.query(sql, rs -> {
+                    if (rs.next()) {
+                        return User.builder()
+                                .id(rs.getLong("id"))
+                                .username(rs.getString("username"))
+                                .email(rs.getString("email"))
+                                .build();
+                    }
+                    return null;
+                })
+        );
+
+    }
+
+    @Override
+    public Optional<User> findByUsernameUncheckInjection(String username) {
+        String sql =
+                "SELECT * " +
+                        "FROM `users` " +
+                        "WHERE `username`='" + username + "'";
+        return Optional.ofNullable(
+                jdbcTemplate.query(sql, rs -> {
+                    if (rs.next()) {
+                        return User.builder()
+                                .id(rs.getLong("id"))
+                                .username(rs.getString("username"))
+                                .email(rs.getString("email"))
+                                .password(rs.getString("password"))
+                                .build();
+                    }
+                    return null;
+                })
+        );
     }
 }

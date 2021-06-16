@@ -3,11 +3,9 @@ package com.socialapp.backend.authen.controller;
 import com.socialapp.backend.authen.dto.LoginRequest;
 import com.socialapp.backend.authen.dto.LoginResponse;
 import com.socialapp.backend.authen.dto.RegisterRequest;
-import com.socialapp.backend.authen.mapper.RegisterMapper;
 import com.socialapp.backend.jwt.JwtTokenProvider;
 import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.CustomUserDetails;
-import com.socialapp.backend.user.entity.User;
 import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +29,6 @@ public class AuthenticationController {
     private final JwtTokenProvider tokenProvider;
 
     private final UserService userService;
-    private final UserMapper userMapper;
-    private final RegisterMapper registerMapper;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -51,16 +47,10 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        User user = this.registerMapper.map(registerRequest);
-        UserDTO res = this.userMapper.map(
-                this.userService.insertUser(user)
-        );
+
+        UserDTO res = this.userService.insertUser(registerRequest);
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
-    @GetMapping("/hehe")
-    public String getLogin() {
-        return "Hehe";
-    }
 }

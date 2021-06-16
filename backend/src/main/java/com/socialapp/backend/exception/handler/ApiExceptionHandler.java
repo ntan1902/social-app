@@ -60,8 +60,9 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {DataAccessException.class})
     public ResponseEntity<Object> handleDataAccessException(DataAccessException exception) {
+        log.error(exception.getMessage());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        return getResponse(httpStatus, exception.getMessage());
+        return getResponse(httpStatus, "Oops!!! Something's wrong with your information");
     }
 }

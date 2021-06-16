@@ -18,25 +18,17 @@ public class AuthenticationUserService implements UserDetailsService {
 
     // ---- UserDetailsService ----
     @Override
-    public UserDetails loadUserByUsername(String username){
-        try {
-            User user = this.userRepository.findByUsername(username).get();
-            return new CustomUserDetails(user);
-        } catch (Exception e) {
-            log.error("Username " + username + " is not found");
-            throw new ApiResponseException("Username " + username + " is not found");
-        }
+    public UserDetails loadUserByUsername(String username) {
+        User user = this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new ApiResponseException("User " + username + " is not found"));
+        return new CustomUserDetails(user);
 
     }
 
     public UserDetails loadUserById(Long userId) {
-        try {
-            User user = this.userRepository.findById(userId).get();
-            return new CustomUserDetails(user);
-        } catch (Exception e) {
-            log.error("User id " + userId + " is not found");
-            throw new ApiResponseException("User id " + userId + " is not found");
-        }
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new ApiResponseException("User id " + userId + " is not found"));
+        return new CustomUserDetails(user);
     }
     // ---- UserDetailsService ----
 }

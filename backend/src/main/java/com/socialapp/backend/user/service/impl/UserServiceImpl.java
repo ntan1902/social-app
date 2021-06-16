@@ -1,15 +1,19 @@
 package com.socialapp.backend.user.service.impl;
 
+import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.authen.mapper.RegisterMapper;
 import com.socialapp.backend.exception.user.ApiResponseException;
 import com.socialapp.backend.user.dao.UserRepository;
+import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,31 +22,35 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RegisterMapper registerMapper;
+    private final UserMapper userMapper;
 
     // ---- UserService ----
     @Override
-    public User insertUser(User user) {
+    public UserDTO insertUser(RegisterRequest registerRequest) {
         log.info("Inside insertUser of UserServiceImpl");
-        user.setPassword(
-                passwordEncoder.encode(user.getPassword())
-        );
-        try {
-            return this.userRepository.insertUser(user).get();
 
-        } catch (Exception e) {
-            throw new ApiResponseException("Can't insert user");
-        }
+        User user = registerMapper.map(registerRequest);
+        user.setPassword(
+                passwordEncoder.encode(registerRequest.getPassword())
+        );
+
+        return this.userMapper.map(
+                this.userRepository.insertUser(user)
+                        .orElseThrow(() -> new ApiResponseException("Can't insert user"))
+        );
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
         log.info("Inside updateUser of UserServiceImpl");
 
-        try {
-            return this.userRepository.updateUser(user).get();
-        } catch (Exception e) {
-            throw new ApiResponseException("Can't update user");
-        }
+        User user = userMapper.map(userDTO);
+
+        return this.userMapper.map(
+                this.userRepository.updateUser(user)
+                        .orElseThrow(() -> new ApiResponseException("Can't update user"))
+        );
     }
 
     @Override
@@ -52,15 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(Long id) {
+    public UserDTO findUserById(Long id) {
         log.info("Inside findUserById of UserServiceImpl");
 
-        try {
-            return this.userRepository.findById(id).get();
-        } catch (Exception e) {
-            log.error("Invalid user id");
-            throw new ApiResponseException("Invalid user id");
-        }
+        return this.userMapper.map(
+                this.userRepository.findById(id)
+                        .orElseThrow(() -> new ApiResponseException("Invalid user id"))
+        );
     }
 
     @Override
@@ -88,6 +94,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository.removeFollow(id, userId);
     }
 
+
     private void checkValidUserId(Long id, Long userId) {
         if (id.equals(userId)) {
             log.error("Can not follow yourself");
@@ -105,4 +112,29 @@ public class UserServiceImpl implements UserService {
                     throw new ApiResponseException("Invalid user id");
                 });
     }
+
+    /*
+     * Test SQL Injection
+     */
+    @Override
+    public boolean loginUncheckInjection(String username, String password) {
+        Optional<User> optionalUser = this.userRepository.findUserUncheckInjection(username, password);
+
+        if (optionalUser.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean loginUncheckInjectionHashPassword(String username, String password) {
+        Optional<User> optionalUser = this.userRepository.findByUsernameUncheckInjection(username);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return passwordEncoder.matches(password, user.getPassword());
+        }
+        return false;
+    }
+
 }

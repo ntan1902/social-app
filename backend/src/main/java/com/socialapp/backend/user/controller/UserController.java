@@ -1,8 +1,6 @@
 package com.socialapp.backend.user.controller;
 
 import com.socialapp.backend.user.dto.UserDTO;
-import com.socialapp.backend.user.entity.User;
-import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,14 +15,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO) {
-        User user = this.userMapper.map(userDTO);
-        UserDTO res = this.userMapper.map(
-                this.userService.updateUser(id, user)
-        );
+        UserDTO res = this.userService.updateUser(id, userDTO);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -37,10 +31,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUserById(@PathVariable("id") Long id) {
-        UserDTO userDTO = this.userMapper.map(
-                this.userService.findUserById(id)
-        );
-        return new ResponseEntity<>(userDTO, HttpStatus.FOUND);
+        UserDTO res = this.userService.findUserById(id);
+        return new ResponseEntity<>(res, HttpStatus.FOUND);
     }
 
     @PostMapping("/{id}/follow")

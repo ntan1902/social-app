@@ -1,9 +1,10 @@
 package com.socialapp.backend.post.service;
 
+import com.socialapp.backend.post.dto.PostDTO;
 import com.socialapp.backend.post.entity.Post;
 
 public interface PostService {
-    Post insertPost(Post post);
+    PostDTO insertPost(PostDTO postDTO);
 
-    Post updatePost(Long id, Post post);
+    PostDTO updatePost(Long id, PostDTO postDTO);
 }

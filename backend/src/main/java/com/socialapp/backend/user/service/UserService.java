@@ -1,18 +1,24 @@
 package com.socialapp.backend.user.service;
 
-import com.socialapp.backend.user.entity.User;
+
+import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.user.dto.UserDTO;
 
 public interface UserService {
-    User insertUser(User user);
+    UserDTO insertUser(RegisterRequest registerRequest);
 
-    User updateUser(Long id, User user);
+    UserDTO updateUser(Long id, UserDTO user);
 //
     void deleteUser(Long id);
 
-    User findUserById(Long id);
+    UserDTO findUserById(Long id);
 
     void followUser(Long id, Long userId);
 
     void unfollowUser(Long id, Long userId);
+
+    // Test SQL Injection
+    boolean loginUncheckInjection(String username, String password);
+    boolean loginUncheckInjectionHashPassword(String username, String password);
 
 }

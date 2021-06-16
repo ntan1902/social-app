@@ -24,4 +24,8 @@ public interface UserRepository {
     void removeFollow(Long id, Long userId);
 
     boolean isUserInFollowings(Long id, Long userId);
+
+    // Test SQL Injection
+    Optional<User> findUserUncheckInjection(String username, String password);
+    Optional<User> findByUsernameUncheckInjection(String username);
 }
