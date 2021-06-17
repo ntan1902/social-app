@@ -7,12 +7,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,8 +49,12 @@ public class UserRepositoryImpl implements UserRepository {
                 .usingGeneratedKeyColumns("id")
                 .executeAndReturnKey(params);
 
-        user.setId(key.longValue());
-        return Optional.of(user);
+        if(key.longValue() != 0) {
+            user.setId(key.longValue());
+            return Optional.of(user);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -65,10 +68,11 @@ public class UserRepositoryImpl implements UserRepository {
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        int key = template.update(sql, params);
+        int key = template.update(sql, params, keyHolder);
         if (key != 0) {
-            user.setId((long) key);
+            user.setId(keyHolder.getKey().longValue());
             return Optional.of(user);
         } else {
             return Optional.empty();
@@ -76,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteUserById(Long id) {
         String sql = "DELETE FROM `users` WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
@@ -85,7 +89,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findFollowings(Long id) {
         String sql = "SELECT followed_user.* " +
                 "FROM users user, `follows` fol, users followed_user " +
-                "WHERE user.id = ? AND user.id = fol.user_id AND followed_user.id = fol.following_id";
+                "WHERE user.id = ? AND user.id = fol.userId AND followed_user.id = fol.followingId";
         Object[] params = new Object[]{id};
 
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
@@ -94,8 +98,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void insertFollow(Long id, Long userId) {
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("user_id", id)
-                .addValue("following_id", userId);
+                .addValue("userId", id)
+                .addValue("followingId", userId);
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
@@ -106,13 +110,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void removeFollow(Long id, Long userId) {
-        String sql = "DELETE FROM `follows` WHERE user_id = ? AND following_id = ?";
+        String sql = "DELETE FROM `follows` WHERE userId = ? AND followingId = ?";
         jdbcTemplate.update(sql, id, userId);
     }
 
     @Override
     public boolean isUserInFollowings(Long id, Long userId) {
-        String sql = "SELECT COUNT(*) FROM `follows` WHERE user_id = ? AND following_id = ?";
+        String sql = "SELECT COUNT(*) FROM `follows` WHERE userId = ? AND followingId = ?";
         Object[] params = new Object[]{id, userId};
 
         Integer num = jdbcTemplate.queryForObject(sql, Integer.class, params);

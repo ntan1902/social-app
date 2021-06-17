@@ -2,12 +2,13 @@ package com.socialapp.backend.user.dao.impl;
 
 import com.socialapp.backend.user.dao.UserRepository;
 import com.socialapp.backend.user.entity.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,17 +17,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @JdbcTest
+@Import({UserRepositoryImpl.class})
 class UserRepositoryImplTest {
+    @Configuration
+    @EnableAutoConfiguration
+    static class Config {
+    }
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     private UserRepository underTest;
-
-    @BeforeEach
-    void setUp() {
-        underTest = new UserRepositoryImpl(jdbcTemplate);
-    }
 
     @Test
     void test_findByUsername() {
@@ -96,7 +95,7 @@ class UserRepositoryImplTest {
         Optional<User> optionalUser = underTest.findById(1L);
 
         // when
-        underTest.deleteById(1L);
+        underTest.deleteUserById(1L);
 
         // then
         assertThatThrownBy(() -> underTest.findById(1L))

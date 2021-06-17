@@ -1,8 +1,6 @@
 package com.socialapp.backend.post.controller;
 
 import com.socialapp.backend.post.dto.PostDTO;
-import com.socialapp.backend.post.entity.Post;
-import com.socialapp.backend.post.mapper.PostMapper;
 import com.socialapp.backend.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,15 +16,27 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<?> insertPost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity<?> insertPost(@RequestBody @Valid PostDTO postDTO) {
 
         PostDTO res = this.postService.insertPost(postDTO);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable("id") Long id, @RequestBody PostDTO postDTO) {
         PostDTO res = this.postService.updatePost(id, postDTO);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return ResponseEntity.ok(res);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable("id") Long id) {
+        this.postService.deletePostById(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findPost(@PathVariable("id") Long id) {
+        PostDTO res = this.postService.findPostById(id);
+        return ResponseEntity.ok(res);
     }
 }

@@ -15,7 +15,7 @@ public interface UserRepository {
 
     Optional<User> updateUser(User user);
 
-    void deleteById(Long id);
+    void deleteUserById(Long id);
 
     List<User> findFollowings(Long id);
 

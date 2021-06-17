@@ -8,7 +8,7 @@ import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.User;
 import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Log4j2
 public class UserServiceImpl implements UserService {
 
@@ -54,9 +54,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         log.info("Inside deleteUser of UserServiceImpl");
-        this.userRepository.deleteById(id);
+        this.userRepository.deleteUserById(id);
     }
 
     @Override

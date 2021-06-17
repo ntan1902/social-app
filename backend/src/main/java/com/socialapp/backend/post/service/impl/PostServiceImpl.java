@@ -32,15 +32,30 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO updatePost(Long id, PostDTO postDTO) {
-//        log.info("Inside updatePost of PostServiceImpl");
-//        this.postRepository.findById(id)
-//                .orElseThrow(() -> new IllegalStateException("Invalid post id"));
-//        this.userRepository.findById(post.getUser().getId())
-//                .orElseThrow(() -> new UserIdNotFoundException("Invalid user id"));
-//
-//        Post res = this.postRepository.save(post);
-//        res.getUser().setPassword(null);
 
-        return null;
+        log.info("Inside updatePost of PostServiceImpl");
+
+        Post post = this.postMapper.map(postDTO);
+
+        return this.postMapper.map(
+                this.postRepository.updatePost(post)
+                        .orElseThrow(() -> new ApiResponseException("Can't update post"))
+        );
+    }
+
+    @Override
+    public void deletePostById(Long id) {
+        log.info("Inside deletePost of PostServiceImpl");
+        this.postRepository.deletePostById(id);
+    }
+
+    @Override
+    public PostDTO findPostById(Long id) {
+        log.info("Inside findPostById of PostServiceImpl");
+
+        return this.postMapper.map(
+                this.postRepository.findPostById(id)
+                        .orElseThrow(() -> new ApiResponseException("Invalid post id"))
+        );
     }
 }
