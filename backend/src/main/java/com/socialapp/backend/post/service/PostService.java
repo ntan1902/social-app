@@ -17,5 +17,4 @@ public interface PostService {
 
     void likePost(Long id, Long userId);
 
-    List<UserPostDTO> findTimeLine(Long userId);
 }

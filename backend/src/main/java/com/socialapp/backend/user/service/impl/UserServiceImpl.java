@@ -3,6 +3,10 @@ package com.socialapp.backend.user.service.impl;
 import com.socialapp.backend.authen.dto.RegisterRequest;
 import com.socialapp.backend.authen.mapper.RegisterMapper;
 import com.socialapp.backend.exception.user.ApiResponseException;
+import com.socialapp.backend.post.dao.PostRepository;
+import com.socialapp.backend.post.dto.UserPostDTO;
+import com.socialapp.backend.post.entity.Post;
+import com.socialapp.backend.post.mapper.UserPostMapper;
 import com.socialapp.backend.user.dao.UserRepository;
 import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.User;
@@ -13,6 +17,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,9 +28,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+
     private final PasswordEncoder passwordEncoder;
+
     private final RegisterMapper registerMapper;
     private final UserMapper userMapper;
+    private final UserPostMapper userPostMapper;
 
     // ---- UserService ----
     @Override
@@ -70,47 +81,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void followUser(Long id, Long userId) {
-        checkValidUserId(id, userId);
+    public List<UserPostDTO> findAllPosts(Long id) {
+        log.info("Inside findAllPosts of UserServiceImpl");
+        List<UserPostDTO> res = new ArrayList<>();
 
-        if (this.userRepository.isUserInFollowings(id, userId)) {
-            log.error("User is already followed");
-            throw new ApiResponseException("User is already followed");
-        }
+        // Get User
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiResponseException("Invalid user id"));
 
-        this.userRepository.insertFollow(id, userId);
-    }
+        // Get all posts of user
+        List<Post> posts = postRepository.findPostsByUserId(id)
+                .orElse(Collections.emptyList());
 
+        // For each post, get all likes of that post
+        posts.forEach(post -> {
+            List<User> likes = postRepository.findLikesOfPost(post.getId())
+                    .orElse(Collections.emptyList());
 
-    @Override
-    public void unfollowUser(Long id, Long userId) {
-        checkValidUserId(id, userId);
-
-        if (!this.userRepository.isUserInFollowings(id, userId)) {
-            log.error("User is already unfollowed");
-            throw new ApiResponseException("User is already unfollowed");
-        }
-
-        this.userRepository.removeFollow(id, userId);
-    }
-
-
-    private void checkValidUserId(Long id, Long userId) {
-        if (id.equals(userId)) {
-            log.error("Can not follow yourself");
-            throw new ApiResponseException("Can not follow yourself");
-        }
-
-        this.userRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Invalid user id");
-                    throw new ApiResponseException("Invalid user id");
-                });
-        this.userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Invalid user id");
-                    throw new ApiResponseException("Invalid user id");
-                });
+            res.add(
+                    userPostMapper.map(user, post, likes)
+            );
+        });
+        return res;
     }
 
     /*

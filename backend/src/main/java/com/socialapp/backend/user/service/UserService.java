@@ -2,7 +2,10 @@ package com.socialapp.backend.user.service;
 
 
 import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.user.dto.UserDTO;
+
+import java.util.List;
 
 public interface UserService {
     UserDTO insertUser(RegisterRequest registerRequest);
@@ -13,9 +16,7 @@ public interface UserService {
 
     UserDTO findUserById(Long id);
 
-    void followUser(Long id, Long userId);
-
-    void unfollowUser(Long id, Long userId);
+    List<UserPostDTO> findAllPosts(Long id);
 
     // Test SQL Injection
     boolean loginUncheckInjection(String username, String password);

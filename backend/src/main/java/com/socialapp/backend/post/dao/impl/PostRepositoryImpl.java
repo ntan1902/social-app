@@ -114,7 +114,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Optional<List<User>> findLikesOfPost(Long id) {
-        String sql = "SELECT u.* FROM like_posts li, users u WHERE li.postId = ? AND li.userId=u.id";
+        String sql = "SELECT u.* FROM like_posts li, users u WHERE li.postId = ? AND li.userId = u.id";
         Object[] params = new Object[]{id};
 
         List<User> users = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);

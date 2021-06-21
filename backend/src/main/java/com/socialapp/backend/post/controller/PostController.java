@@ -22,7 +22,7 @@ public class PostController {
     public ResponseEntity<?> insertPost(@RequestBody @Valid PostDTO postDTO) {
 
         PostDTO res = this.postService.insertPost(postDTO);
-        return ResponseEntity.ok(res);
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -34,7 +34,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") Long id) {
         this.postService.deletePostById(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
@@ -46,12 +46,7 @@ public class PostController {
     @PutMapping("/{id}/like")
     public ResponseEntity<?> likePost(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId){
         this.postService.likePost(id, userId.get("id"));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/timeline")
-    public ResponseEntity<?> getAllTimeLine(@RequestBody Map<String, Long> userId) {
-        List<UserPostDTO> res = this.postService.findTimeLine(userId.get("id"));
-        return ResponseEntity.ok(res);
-    }
 }

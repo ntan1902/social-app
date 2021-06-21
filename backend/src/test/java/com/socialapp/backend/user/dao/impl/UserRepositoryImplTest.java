@@ -120,28 +120,4 @@ class UserRepositoryImplTest {
 
     }
 
-    @Test
-    void test_insertFollow(){
-        // given
-        underTest.insertFollow(1L, 3L);
-
-        // when
-        List<User> followings = underTest.findFollowings(1L);
-
-        // then
-        assertThat(followings.get(1).getId()).isEqualTo(3L);
-
-    }
-
-    @Test
-    void test_removeFollow(){
-        // given
-        underTest.removeFollow(2L, 1L);
-
-        // when
-        List<User> followings = underTest.findFollowings(2L);
-
-        // then
-        assertThat(followings.size()).isEqualTo(0);
-    }
 }

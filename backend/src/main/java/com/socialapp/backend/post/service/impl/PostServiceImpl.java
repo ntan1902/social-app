@@ -24,6 +24,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
     private final PostMapper postMapper;
     private final UserPostMapper userPostMapper;
 
@@ -78,28 +79,4 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    @Override
-    public List<UserPostDTO> findTimeLine(Long userId) {
-        log.info("Inside findTimeLine of PostServiceImpl");
-        List<UserPostDTO> res = new ArrayList<>();
-
-        // Get User
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiResponseException("Invalid user id"));
-
-        // Get all posts of user
-        List<Post> posts = postRepository.findPostsByUserId(userId)
-                .orElse(Collections.emptyList());
-
-        // For each post, get all likes of that post
-        posts.forEach(post -> {
-            List<User> likes = postRepository.findLikesOfPost(post.getId())
-                    .orElse(Collections.emptyList());
-
-            res.add(
-                    userPostMapper.map(user, post, likes)
-            );
-        });
-        return res;
-    }
 }

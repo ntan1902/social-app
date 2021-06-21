@@ -96,35 +96,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void insertFollow(Long id, Long userId) {
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("userId", id)
-                .addValue("followingId", userId);
-
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-
-        simpleJdbcInsert
-                .withTableName("follows")
-                .execute(params);
-    }
-
-    @Override
-    public void removeFollow(Long id, Long userId) {
-        String sql = "DELETE FROM `follows` WHERE userId = ? AND followingId = ?";
-        jdbcTemplate.update(sql, id, userId);
-    }
-
-    @Override
-    public boolean isUserInFollowings(Long id, Long userId) {
-        String sql = "SELECT COUNT(*) FROM `follows` WHERE userId = ? AND followingId = ?";
-        Object[] params = new Object[]{id, userId};
-
-        Integer num = jdbcTemplate.queryForObject(sql, Integer.class, params);
-
-        return num != 0;
-    }
-
-    @Override
     public Optional<User> findUserUncheckInjection(String username, String password) {
 
         String sql =

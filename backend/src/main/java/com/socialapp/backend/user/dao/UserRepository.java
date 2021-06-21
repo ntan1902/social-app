@@ -19,12 +19,6 @@ public interface UserRepository {
 
     List<User> findFollowings(Long id);
 
-    void insertFollow(Long id, Long userId);
-
-    void removeFollow(Long id, Long userId);
-
-    boolean isUserInFollowings(Long id, Long userId);
-
     // Test SQL Injection
     Optional<User> findUserUncheckInjection(String username, String password);
     Optional<User> findByUsernameUncheckInjection(String username);
