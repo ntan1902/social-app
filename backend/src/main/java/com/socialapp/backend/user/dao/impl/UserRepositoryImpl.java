@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> insertUser(User user) {
+    public Optional<User> insert(User user) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
@@ -58,7 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> updateUser(User user) {
+    public Optional<User> update(User user) {
         String sql = "UPDATE users u " +
                 "SET " +
                 "u.username = :username, " +
@@ -80,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteById(Long id) {
         String sql = "DELETE FROM `users` WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
@@ -89,7 +89,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findFollowings(Long id) {
         String sql = "SELECT followed_user.* " +
                 "FROM users user, `follows` fol, users followed_user " +
-                "WHERE user.id = ? AND user.id = fol.userId AND followed_user.id = fol.followingId";
+                "WHERE user.id = ? AND user.id = fol.user_id AND followed_user.id = fol.following_id";
         Object[] params = new Object[]{id};
 
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
@@ -98,8 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findUserUncheckInjection(String username, String password) {
 
-        String sql =
-                "SELECT * " +
+        String sql = "SELECT * " +
                         "FROM `users` " +
                         "WHERE `username`='" + username + "' " +
                         "AND `password` = '" + password + "'";
@@ -120,8 +119,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findByUsernameUncheckInjection(String username) {
-        String sql =
-                "SELECT * " +
+        String sql = "SELECT * " +
                         "FROM `users` " +
                         "WHERE `username`='" + username + "'";
         return Optional.ofNullable(

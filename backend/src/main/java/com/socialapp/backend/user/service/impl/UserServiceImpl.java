@@ -3,6 +3,10 @@ package com.socialapp.backend.user.service.impl;
 import com.socialapp.backend.authen.dto.RegisterRequest;
 import com.socialapp.backend.authen.mapper.RegisterMapper;
 import com.socialapp.backend.exception.user.ApiResponseException;
+import com.socialapp.backend.follow.dao.FollowRepository;
+import com.socialapp.backend.follow.entity.Follow;
+import com.socialapp.backend.like.dao.LikeRepository;
+import com.socialapp.backend.like.entity.Like;
 import com.socialapp.backend.post.dao.PostRepository;
 import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.post.entity.Post;
@@ -29,6 +33,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final FollowRepository followRepository;
+    private final LikeRepository likeRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -47,7 +53,7 @@ public class UserServiceImpl implements UserService {
         );
 
         return this.userMapper.map(
-                this.userRepository.insertUser(user)
+                this.userRepository.insert(user)
                         .orElseThrow(() -> new ApiResponseException("Can't insert user"))
         );
     }
@@ -59,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.map(userDTO);
 
         return this.userMapper.map(
-                this.userRepository.updateUser(user)
+                this.userRepository.update(user)
                         .orElseThrow(() -> new ApiResponseException("Can't update user"))
         );
     }
@@ -67,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id) {
         log.info("Inside deleteUser of UserServiceImpl");
-        this.userRepository.deleteUserById(id);
+        this.userRepository.deleteById(id);
     }
 
     @Override
@@ -90,17 +96,44 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ApiResponseException("Invalid user id"));
 
         // Get all posts of user
-        List<Post> posts = postRepository.findPostsByUserId(id)
+        List<Post> posts = postRepository.findAllByUserId(id)
                 .orElse(Collections.emptyList());
 
         // For each post, get all likes of that post
         posts.forEach(post -> {
-            List<User> likes = postRepository.findLikesOfPost(post.getId())
+            List<Like> likes = likeRepository.findAllByPostId(post.getId())
                     .orElse(Collections.emptyList());
 
+            // For each like, get all information of liked user
+            List<User> likedUsers = new ArrayList<>();
+            likes.forEach(like -> likedUsers.add(
+                    this.userRepository.findById(like.getUserId())
+                            .orElse(null)
+            ));
+
             res.add(
-                    userPostMapper.map(user, post, likes)
+                    userPostMapper.map(user, post, likedUsers)
             );
+        });
+        return res;
+    }
+
+    @Override
+    public List<UserDTO> findAllFollowings(Long id) {
+        log.info("Inside findAllFollowings of UserServiceImpl");
+        List<UserDTO> res = new ArrayList<>();
+
+
+        // Get all follows of user
+        List<Follow> follows = followRepository.findAllByUserId(id)
+                .orElse(Collections.emptyList());
+
+        // For each follow, get all information of following user
+        follows.forEach(follow -> {
+
+            User following_user = userRepository.findById(follow.getFollowingId())
+                    .orElse(null);
+            res.add(userMapper.map(following_user));
         });
         return res;
     }

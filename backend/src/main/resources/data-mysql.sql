@@ -5,7 +5,7 @@ VALUES (1, 'ntan1902', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N8
        (4, 'dbtien', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'dbtien@fit.hcmus.edu.vn'),
        (5, 'htthanh', '123456', 'htthanh@fit.hcmus.edu.vn');
 
-INSERT INTO `follows`(userId, followingId)
+INSERT INTO `follows`(user_id, following_id)
 VALUES (1, 2),
        (1, 4),
        (1, 5),
@@ -13,7 +13,7 @@ VALUES (1, 2),
        (4, 1),
        (4, 2);
 
-INSERT INTO `posts`(`userId`, `description`, `img`)
+INSERT INTO `posts`(`user_id`, `description`, `img`)
 VALUES (1, 'Hey! It\'s my first post :)',
         'https://images.unsplash.com/photo-1623764802787-eea7b530c90a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'),
        (1, 'Hello everyone',
@@ -21,7 +21,7 @@ VALUES (1, 'Hey! It\'s my first post :)',
        (2, 'It\'s so cool',
         'https://images.unsplash.com/photo-1623750318496-d74639a6b2fe?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80');
 
-INSERT INTO `like_posts`(`postId`, `userId`)
+INSERT INTO `like_posts`(`post_id`, `user_id`)
 VALUES (1, 2),
        (1, 3),
        (2, 4);

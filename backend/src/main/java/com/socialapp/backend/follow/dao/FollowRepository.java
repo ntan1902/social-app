@@ -1,9 +1,16 @@
 package com.socialapp.backend.follow.dao;
 
-public interface FollowRepository {
-    void insertFollow(Long id, Long followingId);
+import com.socialapp.backend.follow.entity.Follow;
 
-    void removeFollow(Long id, Long followingId);
+import java.util.List;
+import java.util.Optional;
+
+public interface FollowRepository {
+    void insert(Long id, Long followingId);
+
+    void remove(Long id, Long followingId);
 
     boolean isUserInFollowings(Long id, Long userId);
+
+    Optional<List<Follow>> findAllByUserId(Long id);
 }

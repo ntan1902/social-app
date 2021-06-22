@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         this.userService.deleteUserById(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -40,6 +40,12 @@ public class UserController {
     @GetMapping("/{id}/all-posts")
     public ResponseEntity<List<UserPostDTO>> findAllPosts(@PathVariable("id") Long id) {
         List<UserPostDTO> res = this.userService.findAllPosts(id);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/{id}/all-followings")
+    public ResponseEntity<List<UserDTO>> findAllFollowings(@PathVariable("id") Long id) {
+        List<UserDTO> res = this.userService.findAllFollowings(id);
         return ResponseEntity.ok(res);
     }
 }

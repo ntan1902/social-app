@@ -1,5 +1,6 @@
 package com.socialapp.backend.user.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;

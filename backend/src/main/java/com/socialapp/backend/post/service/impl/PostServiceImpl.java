@@ -1,15 +1,17 @@
 package com.socialapp.backend.post.service.impl;
 
 import com.socialapp.backend.exception.user.ApiResponseException;
+import com.socialapp.backend.like.dao.LikeRepository;
+import com.socialapp.backend.like.entity.Like;
 import com.socialapp.backend.post.dao.PostRepository;
 import com.socialapp.backend.post.dto.PostDTO;
-import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.post.entity.Post;
 import com.socialapp.backend.post.mapper.PostMapper;
-import com.socialapp.backend.post.mapper.UserPostMapper;
 import com.socialapp.backend.post.service.PostService;
 import com.socialapp.backend.user.dao.UserRepository;
+import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,11 @@ import java.util.List;
 @Log4j2
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
     private final PostMapper postMapper;
-    private final UserPostMapper userPostMapper;
+    private final UserMapper userMapper;
 
     @Override
     public PostDTO insertPost(PostDTO postDTO) {
@@ -35,7 +38,7 @@ public class PostServiceImpl implements PostService {
         Post post = this.postMapper.map(postDTO);
 
         return this.postMapper.map(
-                this.postRepository.insertPost(post)
+                this.postRepository.insert(post)
                         .orElseThrow(() -> new ApiResponseException("Can't insert post"))
         );
     }
@@ -48,7 +51,7 @@ public class PostServiceImpl implements PostService {
         Post post = this.postMapper.map(postDTO);
 
         return this.postMapper.map(
-                this.postRepository.updatePost(post)
+                this.postRepository.update(post)
                         .orElseThrow(() -> new ApiResponseException("Can't update post"))
         );
     }
@@ -56,7 +59,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePostById(Long id) {
         log.info("Inside deletePost of PostServiceImpl");
-        this.postRepository.deletePostById(id);
+        this.postRepository.deleteById(id);
     }
 
     @Override
@@ -64,19 +67,29 @@ public class PostServiceImpl implements PostService {
         log.info("Inside findPostById of PostServiceImpl");
 
         return this.postMapper.map(
-                this.postRepository.findPostById(id)
+                this.postRepository.findById(id)
                         .orElseThrow(() -> new ApiResponseException("Invalid post id"))
         );
     }
 
     @Override
-    public void likePost(Long id, Long userId) {
-        log.info("Inside likePost of PostServiceImpl");
-        if (this.postRepository.isUserLikedPost(id, userId)) {
-            this.postRepository.removeLike(id, userId);
-        } else {
-            this.postRepository.insertLike(id, userId);
-        }
+    public List<UserDTO> findLikedUsers(Long id) {
+        log.info("Inside findLikedUsers of PostServiceImpl");
+
+        List<UserDTO> res = new ArrayList<>();
+
+        List<Like> likes = this.likeRepository.findAllByPostId(id)
+                .orElse(Collections.emptyList());
+
+        likes.forEach(like -> {
+            User user = userRepository.findById(like.getUserId())
+                    .orElse(null);
+            res.add(
+                    this.userMapper.map(user)
+            );
+        });
+
+        return res;
     }
 
 }

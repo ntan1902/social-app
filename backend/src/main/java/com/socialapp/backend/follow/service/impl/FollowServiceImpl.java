@@ -24,7 +24,7 @@ public class FollowServiceImpl implements FollowService {
             throw new ApiResponseException("User is already followed");
         }
 
-        this.followRepository.insertFollow(id, followingId);
+        this.followRepository.insert(id, followingId);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class FollowServiceImpl implements FollowService {
             throw new ApiResponseException("User is already unfollowed");
         }
 
-        this.followRepository.removeFollow(id, followingId);
+        this.followRepository.remove(id, followingId);
     }
 
     private void checkValidUserId(Long id, Long followingId) {

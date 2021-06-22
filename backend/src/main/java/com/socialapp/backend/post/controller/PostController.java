@@ -3,6 +3,7 @@ package com.socialapp.backend.post.controller;
 import com.socialapp.backend.post.dto.PostDTO;
 import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.post.service.PostService;
+import com.socialapp.backend.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") Long id) {
         this.postService.deletePostById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -43,10 +44,10 @@ public class PostController {
         return ResponseEntity.ok(res);
     }
 
-    @PutMapping("/{id}/like")
-    public ResponseEntity<?> likePost(@PathVariable("id") Long id, @RequestBody Map<String, Long> userId){
-        this.postService.likePost(id, userId.get("id"));
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}/liked-users")
+    public ResponseEntity<List<UserDTO>> findLikedUsers(@PathVariable("id") Long id) {
+        List<UserDTO> res = this.postService.findLikedUsers(id);
+        return ResponseEntity.ok(res);
     }
 
 }

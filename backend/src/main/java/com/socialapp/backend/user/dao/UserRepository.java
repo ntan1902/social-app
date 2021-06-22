@@ -11,11 +11,11 @@ public interface UserRepository {
 
     Optional<User> findById(Long id);
 
-    Optional<User> insertUser(User user);
+    Optional<User> insert(User user);
 
-    Optional<User> updateUser(User user);
+    Optional<User> update(User user);
 
-    void deleteUserById(Long id);
+    void deleteById(Long id);
 
     List<User> findFollowings(Long id);
 

@@ -7,21 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository{
-    Optional<Post> insertPost(Post post);
+    Optional<Post> insert(Post post);
 
-    Optional<Post> updatePost(Post post);
+    Optional<Post> update(Post post);
 
-    void deletePostById(Long id);
+    void deleteById(Long id);
 
-    Optional<Post> findPostById(Long id);
+    Optional<Post> findById(Long id);
 
-    boolean isUserLikedPost(Long id, Long userId);
+    Optional<List<Post>> findAllByUserId(Long userId);
 
-    void insertLike(Long id, Long userId);
-
-    void removeLike(Long id, Long userId);
-
-    Optional<List<Post>> findPostsByUserId(Long userId);
-
-    Optional<List<User>> findLikesOfPost(Long id);
 }

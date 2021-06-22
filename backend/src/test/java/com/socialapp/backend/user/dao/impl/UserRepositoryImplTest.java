@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
@@ -31,7 +30,7 @@ class UserRepositoryImplTest {
     @Test
     void test_findByUsername() {
         // given
-        underTest.insertUser(
+        underTest.insert(
                 User.builder()
                         .username("test")
                         .email("test@vng.com.vn")
@@ -66,7 +65,7 @@ class UserRepositoryImplTest {
         User user = User.builder().username("annt12").email("annt12@vng.com.vn").build();
 
         // when
-        Optional<User> optionalUser = underTest.insertUser(user);
+        Optional<User> optionalUser = underTest.insert(user);
 
         // then
         assertThat(optionalUser).contains(user);
@@ -81,9 +80,9 @@ class UserRepositoryImplTest {
         User user2 = User.builder().id(8L).username("annt12").email("annt12@vng.com.vn").build();
 
         // when
-        Optional<User> optionalUser = underTest.updateUser(user);
+        Optional<User> optionalUser = underTest.update(user);
 
-        Optional<User> empty = underTest.updateUser(user2);
+        Optional<User> empty = underTest.update(user2);
 
         // then
         assertThat(optionalUser.get().getUsername()).isEqualTo("annt12");
@@ -96,7 +95,7 @@ class UserRepositoryImplTest {
         Optional<User> optionalUser = underTest.findById(1L);
 
         // when
-        underTest.deleteUserById(1L);
+        underTest.deleteById(1L);
 
         // then
         assertThatThrownBy(() -> underTest.findById(1L))

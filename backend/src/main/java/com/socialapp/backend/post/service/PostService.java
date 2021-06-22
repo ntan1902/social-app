@@ -3,6 +3,7 @@ package com.socialapp.backend.post.service;
 import com.socialapp.backend.post.dto.PostDTO;
 import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.post.entity.Post;
+import com.socialapp.backend.user.dto.UserDTO;
 
 import java.util.List;
 
@@ -15,6 +16,5 @@ public interface PostService {
 
     PostDTO findPostById(Long id);
 
-    void likePost(Long id, Long userId);
-
+    List<UserDTO> findLikedUsers(Long id);
 }
