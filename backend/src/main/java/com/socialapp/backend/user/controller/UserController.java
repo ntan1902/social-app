@@ -1,16 +1,14 @@
 package com.socialapp.backend.user.controller;
 
-import com.socialapp.backend.post.dto.UserPostDTO;
+import com.socialapp.backend.user.dto.UserPostDTO;
 import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")

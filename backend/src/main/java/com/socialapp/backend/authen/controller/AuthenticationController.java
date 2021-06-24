@@ -3,10 +3,9 @@ package com.socialapp.backend.authen.controller;
 import com.socialapp.backend.authen.dto.LoginRequest;
 import com.socialapp.backend.authen.dto.LoginResponse;
 import com.socialapp.backend.authen.dto.RegisterRequest;
-import com.socialapp.backend.jwt.JwtTokenProvider;
+import com.socialapp.backend.authen.jwt.JwtTokenProvider;
 import com.socialapp.backend.user.dto.UserDTO;
-import com.socialapp.backend.user.entity.CustomUserDetails;
-import com.socialapp.backend.user.mapper.UserMapper;
+import com.socialapp.backend.authen.entity.CustomUserDetails;
 import com.socialapp.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +30,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),

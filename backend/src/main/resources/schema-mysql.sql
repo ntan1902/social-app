@@ -13,6 +13,7 @@ create table users
     description     varchar(255),
     city            varchar(50),
     from_city       varchar(50),
+    user_role       enum ('USER', 'ADMIN') default 'USER',
     primary key (id)
 ) ENGINE InnoDB;
 

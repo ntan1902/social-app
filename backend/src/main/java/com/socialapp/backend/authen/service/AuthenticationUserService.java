@@ -1,8 +1,8 @@
 package com.socialapp.backend.authen.service;
 
 import com.socialapp.backend.exception.user.ApiResponseException;
-import com.socialapp.backend.user.dao.UserRepository;
-import com.socialapp.backend.user.entity.CustomUserDetails;
+import com.socialapp.backend.user.repository.UserRepository;
+import com.socialapp.backend.authen.entity.CustomUserDetails;
 import com.socialapp.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

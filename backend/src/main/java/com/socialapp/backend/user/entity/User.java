@@ -1,5 +1,6 @@
 package com.socialapp.backend.user.entity;
 
+import com.socialapp.backend.authen.role.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -30,7 +31,6 @@ public class User implements Serializable {
 
     private String fromCity;
 
-//    @Column(name = "is_admin")
-//    private Boolean isAdmin;
+    private UserRole userRole;
 
 }

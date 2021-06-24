@@ -2,7 +2,7 @@ package com.socialapp.backend.user.service;
 
 
 import com.socialapp.backend.authen.dto.RegisterRequest;
-import com.socialapp.backend.post.dto.UserPostDTO;
+import com.socialapp.backend.user.dto.UserPostDTO;
 import com.socialapp.backend.user.dto.UserDTO;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.socialapp.backend.post.controller;
 
 import com.socialapp.backend.post.dto.PostDTO;
-import com.socialapp.backend.post.dto.UserPostDTO;
 import com.socialapp.backend.post.service.PostService;
 import com.socialapp.backend.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/posts")

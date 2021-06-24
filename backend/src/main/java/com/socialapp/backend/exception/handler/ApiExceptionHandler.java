@@ -3,13 +3,14 @@ package com.socialapp.backend.exception.handler;
 import com.socialapp.backend.exception.api.ApiException;
 import com.socialapp.backend.exception.user.ApiResponseException;
 import lombok.extern.log4j.Log4j2;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.BindException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -17,7 +18,6 @@ import java.time.ZonedDateTime;
 @RestControllerAdvice
 @Log4j2
 public class ApiExceptionHandler {
-    @NotNull
     private ResponseEntity<Object> getResponse(HttpStatus httpStatus, String message) {
         // 1. Create payload containing exception details.
         ApiException apiException = new ApiException(
@@ -64,5 +64,21 @@ public class ApiExceptionHandler {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         return getResponse(httpStatus, "Oops!!! Something's wrong with your information");
+    }
+
+    @ExceptionHandler(value = {AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
+        log.error(exception.getMessage());
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        return getResponse(httpStatus, exception.getMessage());
+    }
+
+    @ExceptionHandler(value = {InvocationTargetException.class})
+    public ResponseEntity<Object> handleInvocationTargetException(InvocationTargetException exception) {
+        log.error(exception.getMessage());
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        return getResponse(httpStatus, exception.getMessage());
     }
 }
