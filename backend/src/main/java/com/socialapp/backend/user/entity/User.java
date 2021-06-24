@@ -19,16 +19,16 @@ public class User implements Serializable {
     private String password;
 
     private String email;
-//
-//    private String profilePicture;
-//
-//    private String coverPicture;
-//
-//    private String desc;
-//
-//    private String city;
-//
-//    private String from;
+
+    private String profilePicture;
+
+    private String coverPicture;
+
+    private String description;
+
+    private String city;
+
+    private String fromCity;
 
 //    @Column(name = "is_admin")
 //    private Boolean isAdmin;

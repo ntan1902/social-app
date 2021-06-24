@@ -62,7 +62,12 @@ public class UserRepositoryImpl implements UserRepository {
         String sql = "UPDATE users u " +
                 "SET " +
                 "u.username = :username, " +
-                "u.email = :email " +
+                "u.email = :email, " +
+                "u.profile_picture = :profilePicture, " +
+                "u.cover_picture = :coverPicture, " +
+                "u.description = :description, " +
+                "u.city = :city, " +
+                "u.from_city = :fromCity " +
                 "WHERE " +
                 "u.id = :id ";
 

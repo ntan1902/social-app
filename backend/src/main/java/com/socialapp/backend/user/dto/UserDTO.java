@@ -22,4 +22,14 @@ public class UserDTO {
     @Email(message = "Invalid email")
     private String email;
 
+    private String profilePicture;
+
+    private String coverPicture;
+
+    private String description;
+
+    private String city;
+
+    private String fromCity;
+
 }

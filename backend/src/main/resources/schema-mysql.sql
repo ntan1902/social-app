@@ -4,10 +4,15 @@ use social_app;
 
 create table users
 (
-    id       bigint auto_increment,
-    username varchar(50),
-    password varchar(255),
-    email    varchar(50),
+    id              bigint auto_increment,
+    username        varchar(50),
+    password        varchar(255),
+    email           varchar(50),
+    profile_picture varchar(255),
+    cover_picture   varchar(255),
+    description     varchar(255),
+    city            varchar(50),
+    from_city       varchar(50),
     primary key (id)
 ) ENGINE InnoDB;
 
@@ -23,10 +28,10 @@ create table follows
 create table posts
 (
     id          bigint auto_increment,
-    user_id      bigint,
+    user_id     bigint,
     description text,
     img         varchar(255),
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     primary key (id),
     constraint fk_posts_users foreign key (user_id) references users (id) on delete cascade
