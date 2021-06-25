@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import "./post.css";
 import axios from "axios";
 import {format} from "timeago.js"
+import {Link} from "react-router-dom";
 
 function Post({post}) {
     const [like, setLike] = useState(post.likes.length);
@@ -14,9 +15,9 @@ function Post({post}) {
     useEffect(() => {
         const fetchUser = async () => {
             const res = await axios.get(`/users/${post.data.userId}`)
-            setUser(res.data)
+            return res.data;
         }
-        fetchUser();
+        fetchUser().then(res => setUser(res));
     }, [post.data.userId])
 
     const likeHandler = () => {
@@ -29,13 +30,16 @@ function Post({post}) {
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <img
-                            className="postProfileImg"
-                            src={
-                                user.profilePicture || PF + "person/noAvatar.png"
-                            }
-                            alt=""
-                        />
+                        <Link to={`profile/${user.username}`}>
+
+                            <img
+                                className="postProfileImg"
+                                src={
+                                    user.profilePicture || PF + "person/noAvatar.png"
+                                }
+                                alt=""
+                            />
+                        </Link>
                         <span className="postUsername">
                             {user.username}
                         </span>

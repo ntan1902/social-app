@@ -4,18 +4,26 @@ import "./feed.css";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-function Feed() {
+function Feed({username}) {
     const [posts, setPosts] = useState([])
 
     // Run this once
     useEffect(() => {
         const fetchPosts = async () => {
-            const res = await axios.get("/users/1/all-posts")
-            console.log(res.data)
-            setPosts(res.data)
+
+            if (username) {
+                const user = await axios.get(`/users?username=${username}`);
+                const res = await axios.get(`/users/${user.data.id}/posts`);
+                return res.data;
+
+            } else {
+                const res = await axios.get("/users/1/posts");
+                return res.data;
+            }
         }
 
-        fetchPosts();
+        fetchPosts().then(res => setPosts(res));
+
 
     }, [])
     return (
@@ -23,7 +31,7 @@ function Feed() {
             <div className="feedWrapper">
                 <Share/>
                 {posts.map(post => (
-                  <Post key={post.data.id} post={post} />
+                    <Post key={post.data.id} post={post}/>
                 ))}
             </div>
         </div>
