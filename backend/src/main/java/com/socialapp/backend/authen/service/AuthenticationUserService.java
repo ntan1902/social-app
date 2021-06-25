@@ -25,6 +25,7 @@ public class AuthenticationUserService implements UserDetailsService {
 
     }
 
+    // Used by JwtAuthenticationFilter.class
     public UserDetails loadUserById(Long userId) {
         User user = this.userRepository.findById(userId)
                 .orElseThrow(() -> new ApiResponseException("User id " + userId + " is not found"));

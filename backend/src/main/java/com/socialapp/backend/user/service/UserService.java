@@ -11,10 +11,12 @@ public interface UserService {
     UserDTO insertUser(RegisterRequest registerRequest);
 
     UserDTO updateUser(Long id, UserDTO user);
-//
-    void deleteUserById(Long id);
 
-    UserDTO findUserById(Long id);
+    void deleteById(Long id);
+
+    UserDTO findById(Long id);
+
+    UserDTO findByUsername(String username);
 
     List<UserPostDTO> findAllPosts(Long id);
 

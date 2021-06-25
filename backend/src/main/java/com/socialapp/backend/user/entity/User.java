@@ -31,6 +31,8 @@ public class User implements Serializable {
 
     private String fromCity;
 
+    private Relationship relationship;
+
     private UserRole userRole;
 
 }

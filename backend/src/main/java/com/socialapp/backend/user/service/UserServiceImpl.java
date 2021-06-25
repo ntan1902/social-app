@@ -70,18 +70,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteById(Long id) {
         log.info("Inside deleteUser of UserServiceImpl");
         this.userRepository.deleteById(id);
     }
 
     @Override
-    public UserDTO findUserById(Long id) {
-        log.info("Inside findUserById of UserServiceImpl");
+    public UserDTO findById(Long id) {
+        log.info("Inside findById of UserServiceImpl");
 
         return this.userMapper.map(
                 this.userRepository.findById(id)
                         .orElseThrow(() -> new ApiResponseException("Invalid user id"))
+        );
+    }
+
+    @Override
+    public UserDTO findByUsername(String username) {
+        log.info("Inside findByUsername of UserServiceImpl");
+
+        return this.userMapper.map(
+                this.userRepository.findByUsername(username)
+                        .orElseThrow(() -> new ApiResponseException("Invalid username"))
         );
     }
 

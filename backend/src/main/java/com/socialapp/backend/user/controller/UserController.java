@@ -24,24 +24,30 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-        this.userService.deleteUserById(id);
+        this.userService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable("id") Long id) {
-        UserDTO res = this.userService.findUserById(id);
+        UserDTO res = this.userService.findById(id);
         return ResponseEntity.ok(res);
     }
 
-    @GetMapping("/{id}/all-posts")
+    @GetMapping
+    public ResponseEntity<UserDTO> findUserByUsername(@RequestParam("username") String username) {
+        UserDTO res = this.userService.findByUsername(username);
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/{id}/posts")
     public ResponseEntity<List<UserPostDTO>> findAllPosts(@PathVariable("id") Long id) {
         List<UserPostDTO> res = this.userService.findAllPosts(id);
         return ResponseEntity.ok(res);
     }
 
-    @GetMapping("/{id}/all-followings")
+    @GetMapping("/{id}/followings")
     public ResponseEntity<List<UserDTO>> findAllFollowings(@PathVariable("id") Long id) {
         List<UserDTO> res = this.userService.findAllFollowings(id);
         return ResponseEntity.ok(res);

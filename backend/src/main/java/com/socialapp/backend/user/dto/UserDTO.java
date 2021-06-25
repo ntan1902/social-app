@@ -32,4 +32,8 @@ public class UserDTO {
 
     private String fromCity;
 
+    private String relationship;
+
+    private String userRole;
+
 }
