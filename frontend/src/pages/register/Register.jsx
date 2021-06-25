@@ -12,10 +12,10 @@ function Register() {
         </div>
         <div className="registerRight">
           <div className="registerBox">
-            <input placeHolder="Username" className="registerInput" />
-            <input placeHolder="Email" className="registerInput" />
-            <input placeHolder="Password" className="registerInput" />
-            <input placeHolder="Password again" className="registerInput" />
+            <input placeholder="Username" className="registerInput" />
+            <input placeholder="Email" className="registerInput" />
+            <input placeholder="Password" className="registerInput" />
+            <input placeholder="Password again" className="registerInput" />
             <button className="signupButton">Sign up</button>
             <span className="registerForgot">Forgot Password ?</span>
             <hr />

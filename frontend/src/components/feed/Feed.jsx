@@ -25,7 +25,7 @@ function Feed({username}) {
         fetchPosts().then(res => setPosts(res));
 
 
-    }, [])
+    }, [username])
     return (
         <div className="feed">
             <div className="feedWrapper">

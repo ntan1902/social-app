@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Log4j2
 public class AuthenticationController {
@@ -33,14 +33,19 @@ public class AuthenticationController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
+                        loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
-        return new ResponseEntity<>(new LoginResponse(jwt, "Bearer"), HttpStatus.ACCEPTED);
+        UserDTO user = this.userService.findById(
+                tokenProvider.getUserIdFromJwt(jwt)
+        );
+
+        return new ResponseEntity<>(new LoginResponse(user, jwt, "Bearer"), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/register")

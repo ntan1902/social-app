@@ -18,9 +18,9 @@ public class AuthenticationUserService implements UserDetailsService {
 
     // ---- UserDetailsService ----
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new ApiResponseException("User " + username + " is not found"));
+    public UserDetails loadUserByUsername(String email) {
+        User user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiResponseException("User " + email + " is not found"));
         return new CustomUserDetails(user);
 
     }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.*;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,15 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByUsername(String username) {
         String sql = "SELECT * FROM users u WHERE u.username = ?";
         Object[] params = new Object[]{username};
+
+        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        return Optional.ofNullable(user);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM users u WHERE u.email = ?";
+        Object[] params = new Object[]{email};
 
         User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
         return Optional.ofNullable(user);
@@ -106,9 +114,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findUserUncheckInjection(String username, String password) {
 
         String sql = "SELECT * " +
-                        "FROM `users` " +
-                        "WHERE `username`='" + username + "' " +
-                        "AND `password` = '" + password + "'";
+                "FROM `users` " +
+                "WHERE `username`='" + username + "' " +
+                "AND `password` = '" + password + "'";
         return Optional.ofNullable(
                 jdbcTemplate.query(sql, rs -> {
                     if (rs.next()) {
@@ -127,8 +135,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByUsernameUncheckInjection(String username) {
         String sql = "SELECT * " +
-                        "FROM `users` " +
-                        "WHERE `username`='" + username + "'";
+                "FROM `users` " +
+                "WHERE `username`='" + username + "'";
         return Optional.ofNullable(
                 jdbcTemplate.query(sql, rs -> {
                     if (rs.next()) {
