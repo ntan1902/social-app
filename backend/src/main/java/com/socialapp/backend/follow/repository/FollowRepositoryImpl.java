@@ -4,8 +4,7 @@ import com.socialapp.backend.follow.entity.Follow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -19,20 +18,17 @@ public class FollowRepositoryImpl implements FollowRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void insert(Long id, Long followingId) {
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("user_id", id)
-                .addValue("following_id", followingId);
+    public void insert(Follow follow) {
+        String sql = "INSERT INTO follows(`user_id`, `following_id`) VALUES (:userId, :followingId)";
 
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(follow);
+        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        simpleJdbcInsert
-                .withTableName("follows")
-                .execute(params);
+        template.update(sql, params);
     }
 
     @Override
-    public void remove(Long id, Long followingId) {
+    public void delete(Long id, Long followingId) {
         String sql = "DELETE FROM `follows` WHERE user_id = ? AND following_id = ?";
         jdbcTemplate.update(sql, id, followingId);
     }

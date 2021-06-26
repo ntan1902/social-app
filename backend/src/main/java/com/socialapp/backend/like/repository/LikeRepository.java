@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface LikeRepository {
     boolean isUserLikedPost(Long id, Long userId);
 
-    void insert(Long id, Long userId);
+    void insert(Like like);
 
-    void remove(Long id, Long userId);
+    void delete(Long id, Long userId);
 
     Optional<List<Like>> findAllByPostId(Long id);
 }

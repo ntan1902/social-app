@@ -4,6 +4,10 @@ import com.socialapp.backend.like.entity.Like;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,16 +29,17 @@ public class LikeRepositoryImpl implements LikeRepository {
     }
 
     @Override
-    public void insert(Long id, Long userId) {
-        String sql = "INSERT INTO like_posts(`post_id`, `user_id`) VALUES (?, ?)";
+    public void insert(Like like) {
+        String sql = "INSERT INTO like_posts(`post_id`, `user_id`) VALUES (:postId, :userId)";
 
-        Object[] params = new Object[]{id, userId};
+        SqlParameterSource params = new BeanPropertySqlParameterSource(like);
+        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        this.jdbcTemplate.update(sql, params);
+        template.update(sql, params);
     }
 
     @Override
-    public void remove(Long id, Long userId) {
+    public void delete(Long id, Long userId) {
         String sql = "DELETE FROM `like_posts` WHERE post_id = ? AND user_id = ?";
         this.jdbcTemplate.update(sql, id, userId);
     }

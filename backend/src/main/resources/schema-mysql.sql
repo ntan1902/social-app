@@ -44,6 +44,6 @@ create table like_posts
     post_id bigint,
     user_id bigint,
     primary key (post_id, user_id),
-    constraint fk_like_posts_posts foreign key (post_id) references posts (user_id) on delete cascade,
+    constraint fk_like_posts_posts foreign key (post_id) references posts (id) on delete cascade,
     constraint fk_like_posts_users foreign key (user_id) references users (id) on delete cascade
 ) ENGINE InnoDB;

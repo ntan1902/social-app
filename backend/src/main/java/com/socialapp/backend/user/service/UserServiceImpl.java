@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -138,6 +141,27 @@ public class UserServiceImpl implements UserService {
                     .orElse(null);
             res.add(userMapper.map(following_user));
         });
+        return res;
+    }
+
+    @Override
+    public List<UserPostDTO> findAllFriendPosts(Long id) {
+        log.info("Inside findAllPostsWithFriends of UserServiceImpl");
+
+        // Get all posts of user
+        List<UserPostDTO> res = new ArrayList<>(this.findAllPosts(id));
+
+        // Get all friends of user
+        List<Follow> follows = followRepository.findAllByUserId(id)
+                .orElse(Collections.emptyList());
+
+        // For each follow, get all posts of following user
+        follows.forEach(follow -> {
+            List<UserPostDTO> allPosts = this.findAllPosts(follow.getFollowingId());
+            Collections.addAll(res, allPosts.toArray(new UserPostDTO[0]));
+        });
+
+
         return res;
     }
 

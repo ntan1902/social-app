@@ -47,6 +47,12 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/{id}/timeline")
+    public ResponseEntity<List<UserPostDTO>> findTimeLine(@PathVariable("id") Long id) {
+        List<UserPostDTO> res = this.userService.findAllFriendPosts(id);
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/{id}/followings")
     public ResponseEntity<List<UserDTO>> findAllFollowings(@PathVariable("id") Long id) {
         List<UserDTO> res = this.userService.findAllFollowings(id);

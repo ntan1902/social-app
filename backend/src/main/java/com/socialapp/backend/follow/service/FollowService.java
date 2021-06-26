@@ -1,7 +1,9 @@
 package com.socialapp.backend.follow.service;
 
-public interface FollowService {
-    void insertFollow(Long id, Long followingId);
+import com.socialapp.backend.follow.entity.Follow;
 
-    void removeFollow(Long id, Long followingId);
+public interface FollowService {
+    void insertFollow(Follow follow);
+
+    void deleteFollow(Long id, Long followingId);
 }

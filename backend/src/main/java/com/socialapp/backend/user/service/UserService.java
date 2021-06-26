@@ -22,6 +22,8 @@ public interface UserService {
 
     List<UserDTO> findAllFollowings(Long id);
 
+    List<UserPostDTO> findAllFriendPosts(Long id);
+
     // Test SQL Injection
     boolean loginUncheckInjection(String username, String password);
     boolean loginUncheckInjectionHashPassword(String username, String password);

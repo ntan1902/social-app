@@ -1,6 +1,7 @@
 package com.socialapp.backend.follow.service;
 
 import com.socialapp.backend.exception.user.ApiResponseException;
+import com.socialapp.backend.follow.entity.Follow;
 import com.socialapp.backend.follow.repository.FollowRepository;
 import com.socialapp.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,19 +16,19 @@ public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
 
     @Override
-    public void insertFollow(Long id, Long followingId) {
-        checkValidUserId(id, followingId);
+    public void insertFollow(Follow follow) {
+        checkValidUserId(follow.getUserId(), follow.getFollowingId());
 
-        if (this.followRepository.isUserInFollowings(id, followingId)) {
+        if (this.followRepository.isUserInFollowings(follow.getUserId(), follow.getFollowingId())) {
             log.error("User is already followed");
             throw new ApiResponseException("User is already followed");
         }
 
-        this.followRepository.insert(id, followingId);
+        this.followRepository.insert(follow);
     }
 
     @Override
-    public void removeFollow(Long id, Long followingId) {
+    public void deleteFollow(Long id, Long followingId) {
         checkValidUserId(id, followingId);
 
         if (!this.followRepository.isUserInFollowings(id, followingId)) {
@@ -35,7 +36,7 @@ public class FollowServiceImpl implements FollowService {
             throw new ApiResponseException("User is already unfollowed");
         }
 
-        this.followRepository.remove(id, followingId);
+        this.followRepository.delete(id, followingId);
     }
 
     private void checkValidUserId(Long id, Long followingId) {

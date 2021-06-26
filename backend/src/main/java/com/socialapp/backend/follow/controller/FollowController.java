@@ -1,5 +1,6 @@
 package com.socialapp.backend.follow.controller;
 
+import com.socialapp.backend.follow.entity.Follow;
 import com.socialapp.backend.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController {
     private final FollowService followService;
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> insertFollow(@PathVariable("id") Long id ,@RequestParam("following-id") Long followingId){
-        followService.insertFollow(id, followingId);
+    @PostMapping
+    public ResponseEntity<?> insertFollow(@RequestBody Follow follow){
+        followService.insertFollow(follow);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeFollow(@PathVariable("id") Long id ,@RequestParam("following-id") Long followingId){
-        followService.removeFollow(id, followingId);
+    @DeleteMapping("/{id}/{following-id}")
+    public ResponseEntity<?> deleteFollow(@PathVariable("id") Long id ,@PathVariable("following-id") Long followingId){
+        followService.deleteFollow(id, followingId);
         return ResponseEntity.noContent().build();
     }
 }

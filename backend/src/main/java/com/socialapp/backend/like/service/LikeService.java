@@ -1,7 +1,9 @@
 package com.socialapp.backend.like.service;
 
-public interface LikeService {
-    void insertLike(Long id, Long userId);
+import com.socialapp.backend.like.entity.Like;
 
-    void removeLike(Long id, Long userId);
+public interface LikeService {
+    void insertLike(Like like);
+
+    void deleteLike(Long id, Long userId);
 }
