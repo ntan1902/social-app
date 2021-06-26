@@ -13,7 +13,6 @@ function Login() {
         e.preventDefault();
         loginCall({email: email.current.value, password: password.current.value}, dispatch)
     }
-    console.log(user);
 
     return (
         <div className="login">
@@ -32,7 +31,8 @@ function Login() {
                         <button className="loginButton" disabled={isFetching}>
                             {
                                 isFetching ?
-                                    <CircularProgress color="white" size="20px"/> :
+                                    <CircularProgress color="primary" size="20px"/>
+                                    :
                                     "Log In"
                             }
                         </button>
