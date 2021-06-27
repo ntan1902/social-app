@@ -24,7 +24,10 @@ function Feed({username}) {
             }
         }
 
-        fetchPosts().then(res => setPosts(res));
+        fetchPosts()
+            .then(res => setPosts(res.sort((p1, p2) => {
+                return new Date(p2.data.createdAt) - new Date(p1.data.createdAt);
+            })));
 
 
     }, [username, user.id])

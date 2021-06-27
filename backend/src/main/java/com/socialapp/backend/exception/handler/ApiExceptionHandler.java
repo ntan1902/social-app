@@ -32,13 +32,23 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleException(Exception exception) {
+        log.error(exception.getMessage());
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         return getResponse(httpStatus, "Unknown error");
 
     }
 
+    @ExceptionHandler(value = {RuntimeException.class})
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException exception) {
+        log.error(exception.getMessage());
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        return getResponse(httpStatus, exception.getMessage());
+
+    }
+
     @ExceptionHandler(value = {ApiResponseException.class})
     public ResponseEntity<Object> handleApiResponseException(ApiResponseException exception) {
+        log.error(exception.getMessage());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return getResponse(httpStatus, exception.getMessage());
 
@@ -46,6 +56,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error(exception.getMessage());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return getResponse(httpStatus, exception.getMessage());
 
@@ -53,6 +64,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {BindException.class})
     public ResponseEntity<Object> handleBindException(BindException exception) {
+        log.error(exception.getMessage());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         return getResponse(httpStatus, exception.getMessage());

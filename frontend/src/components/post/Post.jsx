@@ -15,7 +15,6 @@ function Post({post}) {
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
     useEffect(() => {
-        console.log(post)
         setIsLiked(post.likes.includes(currentUser.id))
     }, [currentUser.id, post.likes])
 
