@@ -1,7 +1,7 @@
 import "./register.css";
 import {useRef} from "react";
-import axios from "axios";
 import {useHistory} from "react-router-dom"
+import authApi from "../../api/AuthApi";
 
 function Register() {
   const username = useRef();
@@ -21,8 +21,8 @@ function Register() {
         password: password.current.value
       }
       try{
-        const res = await axios.post("/auth/register", user)
-        console.log(res.data)
+        const res = await authApi.register(user);
+        console.log(res)
         history.push("/login")
       } catch (err) {
         console.log(err)

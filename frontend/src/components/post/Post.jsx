@@ -1,10 +1,11 @@
 import {MoreVert} from "@material-ui/icons";
 import {useContext, useEffect, useState} from "react";
 import "./post.css";
-import axios from "axios";
 import {format} from "timeago.js"
 import {Link} from "react-router-dom";
 import {AuthContext} from "../../context/AuthContext";
+import userApi from "../../api/UserApi";
+import likeApi from "../../api/LikeApi";
 
 function Post({post}) {
     const [like, setLike] = useState(post.likes.length);
@@ -20,17 +21,20 @@ function Post({post}) {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await axios.get(`/users/${post.data.userId}`)
-            return res.data;
+            const res = await userApi.getById(post.data.userId)
+            setUser(res);
         }
-        fetchUser().then(res => setUser(res));
+        fetchUser();
     }, [post.data.userId])
 
     const likeHandler = () => {
         try {
             isLiked ?
-                axios.delete(`/likes/${post.data.id}/${currentUser.id}`) :
-                axios.post("/likes", {postId: post.data.id, userId: currentUser.id});
+                likeApi.unlike(post.data.id, currentUser.id) :
+                likeApi.like({
+                    postId: post.data.id,
+                    userId: currentUser.id
+                });
         } catch (err) {
             console.log(err);
         }
