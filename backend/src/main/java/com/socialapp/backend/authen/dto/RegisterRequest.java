@@ -10,8 +10,6 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class RegisterRequest {
     @NotEmpty(message = "username can not be empty")
     private String username;

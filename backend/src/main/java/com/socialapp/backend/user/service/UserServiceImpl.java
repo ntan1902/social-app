@@ -38,27 +38,10 @@ public class UserServiceImpl implements UserService {
     private final FollowRepository followRepository;
     private final LikeRepository likeRepository;
 
-    private final PasswordEncoder passwordEncoder;
 
-    private final RegisterMapper registerMapper;
     private final UserMapper userMapper;
     private final UserPostMapper userPostMapper;
 
-    // ---- UserService ----
-    @Override
-    public UserDTO insertUser(RegisterRequest registerRequest) {
-        log.info("Inside insertUser of UserServiceImpl");
-
-        User user = registerMapper.map(registerRequest);
-        user.setPassword(
-                passwordEncoder.encode(registerRequest.getPassword())
-        );
-
-        return this.userMapper.map(
-                this.userRepository.insert(user)
-                        .orElseThrow(() -> new ApiResponseException("Can't insert user"))
-        );
-    }
 
     @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
@@ -163,30 +146,6 @@ public class UserServiceImpl implements UserService {
 
 
         return res;
-    }
-
-    /*
-     * Test SQL Injection
-     */
-    @Override
-    public boolean loginUncheckInjection(String username, String password) {
-        Optional<User> optionalUser = this.userRepository.findUserUncheckInjection(username, password);
-
-        if (optionalUser.isPresent()) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean loginUncheckInjectionHashPassword(String username, String password) {
-        Optional<User> optionalUser = this.userRepository.findByUsernameUncheckInjection(username);
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return passwordEncoder.matches(password, user.getPassword());
-        }
-        return false;
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:3000")
 public class PostController {
     private final PostService postService;
     private final FileUploadUtil fileUploadUtil;
@@ -34,8 +35,7 @@ public class PostController {
             value = "/images/{imageName}",
             produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE}
     )
-    public @ResponseBody
-    byte[] getImageWithMediaType(@PathVariable(name = "imageName") String fileName) throws IOException {
+    public byte[] getImageWithMediaType(@PathVariable(name = "imageName") String fileName) throws IOException {
         return fileUploadUtil.load(DIRECTORY_PATH, fileName);
     }
 

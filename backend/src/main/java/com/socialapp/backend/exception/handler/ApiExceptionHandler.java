@@ -78,13 +78,13 @@ public class ApiExceptionHandler {
         return getResponse(httpStatus, "Oops!!! Something's wrong with your information");
     }
 
-    @ExceptionHandler(value = {AuthenticationException.class})
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
-        log.error(exception.getMessage());
-        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-
-        return getResponse(httpStatus, exception.getMessage());
-    }
+//    @ExceptionHandler(value = {AuthenticationException.class})
+//    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
+//        log.error(exception.getMessage());
+//        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+//
+//        return getResponse(httpStatus, exception.getMessage());
+//    }
 
     @ExceptionHandler(value = {InvocationTargetException.class})
     public ResponseEntity<Object> handleInvocationTargetException(InvocationTargetException exception) {

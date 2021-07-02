@@ -109,46 +109,4 @@ public class UserRepositoryImpl implements UserRepository {
 
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
     }
-
-    @Override
-    public Optional<User> findUserUncheckInjection(String username, String password) {
-
-        String sql = "SELECT * " +
-                "FROM `users` " +
-                "WHERE `username`='" + username + "' " +
-                "AND `password` = '" + password + "'";
-        return Optional.ofNullable(
-                jdbcTemplate.query(sql, rs -> {
-                    if (rs.next()) {
-                        return User.builder()
-                                .id(rs.getLong("id"))
-                                .username(rs.getString("username"))
-                                .email(rs.getString("email"))
-                                .build();
-                    }
-                    return null;
-                })
-        );
-
-    }
-
-    @Override
-    public Optional<User> findByUsernameUncheckInjection(String username) {
-        String sql = "SELECT * " +
-                "FROM `users` " +
-                "WHERE `username`='" + username + "'";
-        return Optional.ofNullable(
-                jdbcTemplate.query(sql, rs -> {
-                    if (rs.next()) {
-                        return User.builder()
-                                .id(rs.getLong("id"))
-                                .username(rs.getString("username"))
-                                .email(rs.getString("email"))
-                                .password(rs.getString("password"))
-                                .build();
-                    }
-                    return null;
-                })
-        );
-    }
 }

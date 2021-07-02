@@ -1,6 +1,8 @@
 package com.socialapp.backend.user.service;
 
 
+import com.socialapp.backend.authen.dto.LoginRequest;
+import com.socialapp.backend.authen.dto.LoginResponse;
 import com.socialapp.backend.authen.dto.RegisterRequest;
 import com.socialapp.backend.user.dto.UserPostDTO;
 import com.socialapp.backend.user.dto.UserDTO;
@@ -8,7 +10,6 @@ import com.socialapp.backend.user.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    UserDTO insertUser(RegisterRequest registerRequest);
 
     UserDTO updateUser(Long id, UserDTO user);
 
@@ -23,9 +24,5 @@ public interface UserService {
     List<UserDTO> findAllFollowings(Long id);
 
     List<UserPostDTO> findAllFriendPosts(Long id);
-
-    // Test SQL Injection
-    boolean loginUncheckInjection(String username, String password);
-    boolean loginUncheckInjectionHashPassword(String username, String password);
 
 }

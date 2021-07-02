@@ -2,6 +2,7 @@ package com.socialapp.backend.authen.jwt;
 
 
 import com.socialapp.backend.authen.service.AuthenticationUserService;
+import com.socialapp.backend.exception.user.ApiResponseException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,27 +22,27 @@ import java.io.IOException;
 @Log4j2
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private AuthenticationUserService customUserDetailsService;
+    private AuthenticationUserService authenticationUserService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-
         try {
             String jwt = getJwtFromRequest(request);
 
-            if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromJwt(jwt);
+            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+                Long userId = jwtTokenProvider.getUserIdFromJwt(jwt);
 
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
-                if(userDetails != null) {
+                UserDetails userDetails = authenticationUserService.loadUserById(userId);
+                if (userDetails != null) {
                     UsernamePasswordAuthenticationToken
-                            authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            authentication = new UsernamePasswordAuthenticationToken(userDetails,
+                            null,
+                            userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);

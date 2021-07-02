@@ -16,7 +16,36 @@ VALUES (1, 'ntan1902', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N8
         'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80',
         'https://images.unsplash.com/photo-1515138692129-197a2c608cfd?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
         'Hi, I\'m Tien', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'MARRIED'),
-       (5, 'htthanh', '123456', 'htthanh@fit.hcmus.edu.vn', '', '', '', '', '', 'EMPTY');
+
+       (5, 'hlndung', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'hlndung@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/3841338/pexels-photo-3841338.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+        'https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80',
+        'Hi, I\'m Dung', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'SINGLE'),
+       (6, 'cvnam', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'cvnam@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/3772771/pexels-photo-3772771.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1511137354177-fc53b5ef9a9a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
+        'Hi, I\'m Nam', 'Da Nang', 'Hai Phong', 'SINGLE'),
+       (7, 'ltnquynh', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'ltnquynh@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/3304341/pexels-photo-3304341.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1436262513933-a0b06755c784?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1051&q=80',
+        'Hi, I\'m Quynh', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'MARRIED'),
+       (8, 'htthanh', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'htthanh@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/3519656/pexels-photo-3519656.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1546521677-b3a9b11bee6f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=632&q=80',
+        'Hi, I\'m Tuan Thanh', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'MARRIED'),
+       (9, 'tbthinh', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'tbthinh@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
+        'Hi, I\'m Thinh', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'MARRIED'),
+       (10, 'nlhdung', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'nlhdung@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1530542815882-00148101a747?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80',
+        'Hi, I\'m Huynh Dung', 'Tp. Ho Chi Minh', 'Tp. Ho Chi Minh', 'MARRIED'),
+       (11, 'nlqchi', '$2y$10$/KO/hcLUIEXNxsWfop6hmeh255Po0.Y2eJ66KCm0grl0HM8N81VJG', 'nlqchi@fit.hcmus.edu.vn',
+        'https://images.pexels.com/photos/1082962/pexels-photo-1082962.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        'https://images.unsplash.com/photo-1487147264018-f937fba0c817?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80',
+        'Hi, I\'m Quynh Cheese', 'Tp. Ho Chi Minh', 'Ha Noi', 'SINGLE');
+#        (5, 'htthanh', '123456', 'htthanh@fit.hcmus.edu.vn', '', '', '', '', '', 'EMPTY');
 
 INSERT INTO `follows`(user_id, following_id)
 VALUES (1, 2),
@@ -46,3 +75,11 @@ INSERT INTO `like_posts`(`post_id`, `user_id`)
 VALUES (1, 2),
        (1, 3),
        (2, 4);
+
+INSERT INTO `friends`(user_id, friend_id)
+VALUES (1, 2),
+       (1, 4),
+       (1, 5),
+       (2, 1),
+       (4, 1),
+       (5, 1);

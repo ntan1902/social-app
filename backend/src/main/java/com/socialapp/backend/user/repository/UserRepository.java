@@ -21,7 +21,4 @@ public interface UserRepository {
 
     List<User> findFollowings(Long id);
 
-    // Test SQL Injection
-    Optional<User> findUserUncheckInjection(String username, String password);
-    Optional<User> findByUsernameUncheckInjection(String username);
 }
