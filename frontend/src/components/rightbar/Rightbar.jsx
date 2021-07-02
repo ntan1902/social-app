@@ -16,20 +16,16 @@ function Rightbar({user}) {
 
     useEffect(() => {
         const fetchFriends = async () => {
-            try {
-                const res = await userApi.getFollowings(user?.id)
-                setFriends(res);
-            } catch (err) {
-                console.log(err);
-            }
+            const res = await userApi.getFollowings(user?.id)
+            setFriends(res);
         }
-        if(user) fetchFriends();
+        if (user) fetchFriends();
     }, [user])
 
     useEffect(() => {
         const fetchCurrentUserFriends = async () => {
-            const res = await userApi.getFollowings(currentUser?.id);
-            setFollowed(res?.some(currentUserFriend => currentUserFriend.id === user?.id))
+            const res = await followApi.getFollowings(currentUser?.id);
+            setFollowed(res?.some(follow => follow.followingId === user?.id))
         }
 
         fetchCurrentUserFriends();
@@ -56,8 +52,8 @@ function Rightbar({user}) {
                 <div className="birthdayContainer">
                     <img className="birthdayImg" src={`${PF}gift.png`} alt=""/>
                     <span className="birthdayText">
-            <b>Pola Foster</b> and <b>3 other friends</b>have a birthday today
-          </span>
+                        <b>Pola Foster</b> and <b>3 other friends</b>have a birthday today
+                    </span>
                 </div>
                 <img className="rightbarAd" src={`${PF}ad.png`} alt=""/>
                 <h4 className="rightbarTitle">Online Friends</h4>

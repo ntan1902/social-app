@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -39,6 +42,13 @@ public class FollowServiceImpl implements FollowService {
         }
 
         this.followRepository.delete(id, followingId);
+    }
+
+    @Override
+    public List<Follow> findFollowings(Long id) {
+        log.info("Inside findFollowings of FollowingServiceImpl");
+        return this.followRepository.findAllByUserId(id)
+                .orElse(Collections.emptyList());
     }
 
     private void checkValidUserId(Long id, Long followingId) {

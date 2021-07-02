@@ -53,9 +53,10 @@ axiosClient.interceptors.response.use(response => {
             return refresh().then(rs => {
                 axiosClient.setToken(rs.accessToken);
 
+                const tokenType = localStorage.getItem("tokenType");
                 const config = error.response.config;
                 config.headers = {
-                    'Authorization': `Bearer ${rs.accessToken}`,
+                    'Authorization': `${tokenType} ${rs.accessToken}`,
                     'Accept': 'application/json'
                 }
 

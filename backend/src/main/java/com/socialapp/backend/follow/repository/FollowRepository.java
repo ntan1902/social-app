@@ -13,4 +13,5 @@ public interface FollowRepository {
     boolean isUserInFollowings(Long id, Long userId);
 
     Optional<List<Follow>> findAllByUserId(Long id);
+
 }

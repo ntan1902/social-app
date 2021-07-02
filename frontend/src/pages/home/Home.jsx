@@ -14,7 +14,7 @@ function Home() {
             <Topbar/>
             <div className="homeContainer">
                 <Sidebar/>
-                <Feed username={user.username}/>
+                <Feed username={user.username} isHome={true}/>
                 <Rightbar/>
             </div>
         </>
