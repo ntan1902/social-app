@@ -1,31 +1,30 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient";
 
-class UserApi {
-    getByUsername = (username) => {
+const userApi = {
+    getByUsername: (username) => {
         const url = `/users?username=${username}`;
         return axiosClient.get(url);
-    }
+    },
 
-    getById = (userId) => {
+    getById: (userId) => {
         const url = `/users/${userId}`;
         return axiosClient.get(url);
-    }
+    },
 
-    getPosts = (userId) => {
+    getPosts: (userId) => {
         const url = `/users/${userId}/posts`;
         return axiosClient.get(url);
-    }
+    },
 
-    getTimeLine = (userId) => {
+    getTimeLine: (userId) => {
         const url = `/users/${userId}/timeline`;
         return axiosClient.get(url);
-    }
+    },
 
-    getFollowings = (userId) => {
+    getFollowings: (userId) => {
         const url = `/users/${userId}/followings`;
         return axiosClient.get(url);
-    }
+    },
 }
 
-const userApi = new UserApi();
 export default userApi;

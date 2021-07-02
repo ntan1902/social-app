@@ -1,16 +1,15 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient";
 
-class FollowApi {
-    follow = (follow)  => {
+const followApi =  {
+    follow : (follow)  => {
         const url = `/follows`;
         return axiosClient.post(url, follow);
-    }
+    },
 
-    unfollow = (userId, followingId)  => {
+    unfollow : (userId, followingId)  => {
         const url = `/follows/${userId}/${followingId}`;
         return axiosClient.delete(url);
     }
 }
 
-const followApi = new FollowApi();
 export default followApi;

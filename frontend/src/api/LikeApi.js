@@ -1,16 +1,15 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient";
 
-class LikeApi {
-    like = (like)  => {
+const likeApi = {
+    like : (like)  => {
         const url = `/likes`;
         return axiosClient.post(url, like);
-    }
+    },
 
-    unlike = (postId, userId)  => {
+    unlike : (postId, userId)  => {
         const url = `/likes/${postId}/${userId}`;
         return axiosClient.delete(url);
     }
 }
 
-const likeApi = new LikeApi();
 export default likeApi;

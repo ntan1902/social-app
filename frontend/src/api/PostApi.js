@@ -1,17 +1,16 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient";
 
-class PostApi {
+const postApi = {
 
-    upload = (formData) => {
+    upload : (formData) => {
         const url = '/posts/upload';
         return axiosClient.post(url, formData)
-    }
+    },
 
-    createPost = (post) => {
+    createPost : (post) => {
         const url = '/posts';
         return axiosClient.post(url, post);
     }
 }
 
-const postApi = new PostApi();
 export default postApi;

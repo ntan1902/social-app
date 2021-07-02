@@ -27,7 +27,7 @@ function App() {
 
                 </Route>
 
-                <Route path="/profile/:username">
+                <Route exact path="/profile/:username">
                     {user ? <Profile/> : <Login/>}
                 </Route>
             </Switch>

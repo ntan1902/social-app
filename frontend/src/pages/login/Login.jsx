@@ -19,6 +19,11 @@ function Login() {
                 password: password.current.value
             });
             dispatch(LoginSuccess(res.user));
+
+            localStorage.setItem("tokenType", res.tokenType);
+            localStorage.setItem("accessToken", res.accessToken);
+            localStorage.setItem("refreshToken", res.refreshToken);
+
         } catch (err) {
             dispatch(LoginFailure(err));
         }

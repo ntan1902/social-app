@@ -1,8 +1,8 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient";
 
 class AuthApi {
     login = (userCredential) => {
-        const url = `/auth/login`;
+        const url = '/auth/login';
         return axiosClient.post(url, userCredential);
     }
 
