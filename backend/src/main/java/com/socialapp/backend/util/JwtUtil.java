@@ -1,7 +1,6 @@
 package com.socialapp.backend.authen.jwt;
 
-import com.socialapp.backend.authen.entity.UserDetailsImpl;
-import com.socialapp.backend.exception.user.ApiResponseException;
+import com.socialapp.backend.user.entity.User;
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +20,10 @@ public class JwtTokenProvider {
     private Long JWT_EXPIRATION;
 
 
-    public String generateToken(UserDetailsImpl userDetails) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
 
-        Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
+        Collection<? extends GrantedAuthority> roles = user.getAuthorities();
 
         if (roles.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             claims.put("isAdmin", true);
@@ -34,7 +33,7 @@ public class JwtTokenProvider {
             claims.put("isUser", true);
         }
 
-        return doGenerateToken(claims, userDetails.getUser().getId().toString());
+        return doGenerateToken(claims, user.getId().toString());
     }
 
     public String doGenerateToken(Map<String, Object> claims, String subject) {
