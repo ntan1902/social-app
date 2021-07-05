@@ -1,4 +1,4 @@
-package com.socialapp.backend.authen.jwt;
+package com.socialapp.backend.util;
 
 import com.socialapp.backend.user.entity.User;
 import io.jsonwebtoken.*;
@@ -12,7 +12,7 @@ import java.util.*;
 
 @Component
 @Log4j2
-public class JwtTokenProvider {
+public class JwtUtil {
     @Value("${spring.app.jwtSecret}")
     private String JWT_SECRET;
 

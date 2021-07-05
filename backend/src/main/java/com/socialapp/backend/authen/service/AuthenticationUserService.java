@@ -4,15 +4,15 @@ import com.socialapp.backend.authen.dto.LoginRequest;
 import com.socialapp.backend.authen.dto.LoginResponse;
 import com.socialapp.backend.authen.dto.RegisterRequest;
 import com.socialapp.backend.authen.dto.TokenRefreshResponse;
-import com.socialapp.backend.authen.jwt.JwtTokenProvider;
+import com.socialapp.backend.util.JwtUtil;
 import com.socialapp.backend.authen.mapper.RegisterMapper;
+import com.socialapp.backend.user.entity.UserRole;
 import com.socialapp.backend.exception.user.ApiResponseException;
 import com.socialapp.backend.refresh_token.entity.RefreshToken;
 import com.socialapp.backend.refresh_token.service.RefreshTokenService;
 import com.socialapp.backend.user.dto.UserDTO;
 import com.socialapp.backend.user.mapper.UserMapper;
 import com.socialapp.backend.user.repository.UserRepository;
-import com.socialapp.backend.authen.entity.UserDetailsImpl;
 import com.socialapp.backend.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationUserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtil jwtUtil;
     private final RegisterMapper registerMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -42,20 +42,18 @@ public class AuthenticationUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         log.info("Inside loadUserByUsername of AuthenticationUserService");
 
-        User user = this.userRepository.findByEmail(email)
+        return this.userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiResponseException("User " + email + " is not found"));
-        return new UserDetailsImpl(user);
 
     }
     // ---- UserDetailsService ----
 
     // Used by JwtAuthenticationFilter.class
-    public UserDetails loadUserById(Long userId) {
+    public User loadUserById(Long userId) {
         log.info("Inside loadUserById of AuthenticationUserService");
 
-        User user = this.userRepository.findById(userId)
+        return this.userRepository.findById(userId)
                 .orElseThrow(() -> new ApiResponseException("User id " + userId + " is not found"));
-        return new UserDetailsImpl(user);
     }
 
 
@@ -70,29 +68,29 @@ public class AuthenticationUserService implements UserDetailsService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user =  (User) authentication.getPrincipal();
 
-        String jwt = jwtTokenProvider.generateToken(userDetails);
-        RefreshToken refreshToken = refreshTokenService.insert(userDetails.getUser().getId());
+        String jwt = jwtUtil.generateToken(user);
+        RefreshToken refreshToken = refreshTokenService.insert(user.getId());
 
-        UserDTO userDTO = this.userMapper.map(userDetails.getUser());
+        UserDTO userDTO = this.userMapper.map(user);
 
         return new LoginResponse(userDTO, jwt, refreshToken.getToken(), "Bearer");
     }
 
-    public UserDetails register(RegisterRequest registerRequest) {
+    public UserDTO register(RegisterRequest registerRequest) {
         log.info("Inside register of AuthenticationUserService");
 
         User user = registerMapper.map(registerRequest);
         user.setPassword(
                 passwordEncoder.encode(registerRequest.getPassword())
         );
-
+        user.setUserRole(UserRole.USER);
 
         this.userRepository.insert(user)
                 .orElseThrow(() -> new ApiResponseException("Can't insert user"));
 
-        return new UserDetailsImpl(user);
+        return this.userMapper.map(user);
     }
 
     public TokenRefreshResponse refreshToken(String token) {
@@ -102,8 +100,8 @@ public class AuthenticationUserService implements UserDetailsService {
 
         refreshTokenService.validateToken(refreshToken);
 
-        String jwt = jwtTokenProvider.generateToken(
-                (UserDetailsImpl) this.loadUserById(refreshToken.getUserId())
+        String jwt = jwtUtil.generateToken(
+               this.loadUserById(refreshToken.getUserId())
         );
 
         return new TokenRefreshResponse(jwt, token, "Bearer");

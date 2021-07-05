@@ -71,13 +71,27 @@ create table friends
 
 ) ENGINE InnoDB;
 
-create table messages
+create table user_conversations
 (
-    id         bigint auto_increment,
-    sender_id  bigint,
-    content    varchar(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    first_user_id  bigint,
+    second_user_id bigint,
+    constraint fk_conversations_users_1 foreign key (first_user_id) references users (id) on delete cascade,
+    constraint fk_conversations_users_2 foreign key (second_user_id) references users (id) on delete cascade,
+    index idx_first_id (first_user_id ASC),
+    index idx_second_id (second_user_id ASC)
+) ENGINE InnoDB;
+
+
+create table user_messages
+(
+    id          bigint auto_increment,
+    sender_id   bigint,
+    receiver_id bigint,
+    content     varchar(255),
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     primary key (id),
-    constraint fk_messages_users foreign key (sender_id) references users (id) on delete cascade,
-    index idx_sender_id (sender_id ASC)
+    constraint fk_messages_users_1 foreign key (sender_id) references users (id) on delete cascade,
+    constraint fk_messages_users_2 foreign key (receiver_id) references users (id) on delete cascade,
+    index idx_sender_id (sender_id ASC),
+    index idx_receiver_id (receiver_id ASC)
 ) ENGINE InnoDB;

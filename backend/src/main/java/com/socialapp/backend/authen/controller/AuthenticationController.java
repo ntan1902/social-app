@@ -2,12 +2,12 @@ package com.socialapp.backend.authen.controller;
 
 import com.socialapp.backend.authen.dto.*;
 import com.socialapp.backend.authen.service.AuthenticationUserService;
-import com.socialapp.backend.user.service.UserService;
+import com.socialapp.backend.user.dto.UserDTO;
+import com.socialapp.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,7 +30,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        UserDetails res = this.authenticationUserService.register(registerRequest);
+        UserDTO res = this.authenticationUserService.register(registerRequest);
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }

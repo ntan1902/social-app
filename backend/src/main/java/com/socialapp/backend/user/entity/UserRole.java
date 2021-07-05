@@ -1,4 +1,4 @@
-package com.socialapp.backend.authen.role;
+package com.socialapp.backend.user.entity;
 
 public enum UserRole {
     USER,

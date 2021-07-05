@@ -58,19 +58,19 @@ VALUES (1, 2),
 INSERT INTO `posts`(id, `user_id`, `description`, `img`, `created_at`, `updated_at`)
 VALUES (1, 1, 'Hey! It\'s my first post :)',
         'https://images.unsplash.com/photo-1482061855243-4d326cb25fe2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80',
-        '2021-06-25T14:29:48', '2021-06-25T19:29:48'),
+        '2021-06-2T14:29:48', '2021-06-2T19:29:48'),
        (2, 1, 'Hello everyone',
         'https://images.unsplash.com/photo-1487715433499-93acdc0bd7c3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1114&q=80',
-        '2021-06-25T14:29:48', '2021-06-25T10:29:48'),
+        '2021-05-25T14:29:48', '2021-05-25T10:29:48'),
        (3, 2, 'It\'s so cool',
         'https://images.unsplash.com/photo-1473042904451-00171c69419d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1075&q=80',
-        '2021-06-25T14:29:48', '2021-06-25T12:29:48'),
+        '2021-07-5T14:29:48', '2021-07-5T12:29:48'),
        (4, 1, 'Beautiful view',
         'https://images.unsplash.com/photo-1519865885898-a54a6f2c7eea?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=695&q=80',
-        '2021-06-26T17:13:38',  '2021-06-26T17:13:38'),
+        '2021-06-26T17:13:38', '2021-06-26T17:13:38'),
        (5, 2, 'It\'s water',
         'https://images.unsplash.com/photo-1533167649158-6d508895b680?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80',
-        '2021-06-26T17:17:38', '2021-06-26T17:17:38');
+        '2021-06-12T17:17:38', '2021-06-12T17:17:38');
 INSERT INTO `like_posts`(`post_id`, `user_id`)
 VALUES (1, 2),
        (1, 3),
@@ -83,3 +83,22 @@ VALUES (1, 2),
        (2, 1),
        (4, 1),
        (5, 1);
+
+INSERT INTO `user_conversations`(first_user_id, second_user_id)
+VALUES (1, 2),
+       (2, 1),
+       (1, 4),
+       (4, 1),
+       (1, 5),
+       (5, 1),
+       (4, 5),
+       (5, 4);
+
+INSERT INTO `user_messages` (`id`, `sender_id`, `receiver_id`, `content`, `created_at`)
+VALUES (1, 1, 2, 'Hello, My name is An, nice to meet you!', '2021-06-12T17:17:38'),
+       (2, 2, 1, 'Hi! My name is Nguyen, nice to meet you too', '2021-06-12T17:20:38'),
+       (3, 4, 5, 'Hi! Nice to meet you too', '2021-06-12T17:20:38'),
+       (4, 5, 4, 'Hello! Nice to meet you too', '2021-06-12T17:20:38'),
+       (5, 1, 2, 'Hehe, so glad for your answer', '2021-06-12T17:20:38'),
+       (6, 4, 1, 'Hi! Nice to meet you too', '2021-05-12T17:20:38'),
+       (7, 5, 1, 'Hi! Nice to meet you too', '2021-07-2T17:20:38');
