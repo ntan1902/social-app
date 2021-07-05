@@ -42,7 +42,3 @@
     flex-direction: row-reverse;
 }
 
-.message.own .messageImg {
-    margin-left: 10px;
-    margin-right: 0;
-}

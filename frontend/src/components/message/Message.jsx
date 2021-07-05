@@ -1,14 +1,31 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import "./message.css"
+import {format} from "timeago.js";
+import userApi from "../../api/UserApi";
 
-export default function Message({own}) {
+export default function Message({message, own}) {
+    const [user, setUser] = useState(null);
+    const PF = process.env["REACT_APP_PUBLIC_FOLDER"];
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const res = await userApi.getById(message.senderId);
+            setUser(res);
+        }
+        !own && fetchUser();
+    }, [message.senderId, own])
+
     return (
         <div className={own ? "message own" : "message"}>
             <div className={"messageTop"}>
-                <img className={"messageImg"} src={"https://images.pexels.com/photos/3310693/pexels-photo-3310693.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"}/>
-                <p className={"messageText"}>Hello this is message</p>
+                {
+                    !own && <img className={"messageImg"}
+                              src={user?.profilePicture || PF+"person/noAvatar.png"}
+                              alt={""}/>
+                }
+                <p className={"messageText"}>{message.content}</p>
             </div>
-            <div className={"messageBottom"}>1 hour ago</div>
+            <div className={"messageBottom"}>{format(message.createdAt)}</div>
         </div>
     )
 }

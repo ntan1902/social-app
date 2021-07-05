@@ -27,6 +27,7 @@ function Post({post}) {
         fetchUser();
     }, [post.data.userId])
 
+
     const likeHandler = () => {
         try {
             isLiked ?
