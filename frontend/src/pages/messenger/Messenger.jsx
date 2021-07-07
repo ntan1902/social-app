@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import Topbar from "../../components/topbar/Topbar";
 import "./messenger.css";
 import Conversation from "../../components/conversation/Conversation";
@@ -8,14 +8,67 @@ import ChatOnline from "../../components/chatOnline/ChatOnline";
 import {AuthContext} from "../../context/AuthContext";
 import conversationApi from "../../api/ConversationApi";
 import messageApi from "../../api/MessageApi";
+import Stomp from "stompjs";
 
 export default function Messenger() {
     const [conversations, setConversations] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+    const [arrivalMessage, setArrivalMessage] = useState(null);
 
     const {user} = useContext(AuthContext);
+    const scrollRef = useRef();
+
+
+    const stompClient = useRef();
+
+    // Connect to web socket
+    useEffect(() => {
+        const connect = () => {
+            const url = "ws://localhost:8081/stomp";
+            stompClient.current = Stomp.client(url);
+            stompClient.current.debug = null;
+            stompClient.current.connect({}, onConnected, onError);
+        }
+
+        function onConnected() {
+            console.log("Connected!!!")
+
+            publish({
+                action: "login",
+                data: {
+                    userId: user.id
+                }
+            })
+
+            // Subscribe to the Public Topic
+            stompClient.current.subscribe(`message.data.${user.id}`, onMessageReceived);
+
+        }
+
+        function onError(err) {
+            console.log(err);
+        }
+
+        function onMessageReceived(payload) {
+            console.log(payload)
+
+            const message = JSON.parse(payload.body);
+
+            console.log(message)
+            setArrivalMessage(message)
+        }
+
+        connect();
+    }, [user.id])
+
+    // Publish to Server
+    const publish = (payload) => {
+        if (stompClient.current)
+            stompClient.current.send("api.data", {}, JSON.stringify(payload))
+    }
+
 
     useEffect(() => {
         const fetchConversations = async () => {
@@ -34,6 +87,16 @@ export default function Messenger() {
         currentChat && fetchMessages()
     }, [currentChat])
 
+    useEffect(() => {
+        arrivalMessage &&
+        (currentChat?.secondUserId === arrivalMessage.senderId) &&
+        setMessages((prevState) => [...prevState, arrivalMessage])
+    }, [arrivalMessage, currentChat])
+
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({behavior: "smooth"});
+    }, [messages]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const message = {
@@ -43,7 +106,15 @@ export default function Messenger() {
         };
 
         const res = await messageApi.createMessage(message);
+
+        console.log(res)
+        publish({
+            action: "send-message",
+            data: res
+        })
+
         setMessages([...messages, res]);
+        setNewMessage("");
     }
 
     return (
@@ -56,7 +127,7 @@ export default function Messenger() {
                         {
                             conversations.map(conversation => (
                                 <div key={conversation.secondUserId} onClick={() => setCurrentChat(conversation)}>
-                                    <Conversation  userId={conversation.secondUserId}/>
+                                    <Conversation userId={conversation.secondUserId}/>
                                 </div>
                             ))
                         }
@@ -69,14 +140,18 @@ export default function Messenger() {
                             currentChat ?
                                 <>
                                     <div className={"chatBoxTop"}>
-                                        {messages.map(message => (
-                                            <Message key={message.id} message={message} own={message.senderId === user.id}/>
+                                        {messages.map(m => (
+                                            <div ref={scrollRef} key={m.id} >
+                                                <Message message={m}
+                                                         own={m.senderId === user.id}/>
+                                            </div>
                                         ))}
                                     </div>
 
                                     <div className={"chatBoxBottom"}>
                                         <textarea className={"chatMessageInput"} placeholder={"Aa"}
-                                        onChange={(e) => setNewMessage(e.target.value)}/>
+                                                  value={newMessage}
+                                                  onChange={(e) => setNewMessage(e.target.value)}/>
                                         <Send className={"chatSubmitButton"} onClick={handleSubmit}/>
                                     </div>
                                 </> :
