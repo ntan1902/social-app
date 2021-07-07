@@ -87,7 +87,7 @@ create table user_messages
     id          bigint auto_increment,
     sender_id   bigint,
     receiver_id bigint,
-    content     varchar(255),
+    content     nvarchar(255),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     primary key (id),
     constraint fk_messages_users_1 foreign key (sender_id) references users (id) on delete cascade,

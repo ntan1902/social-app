@@ -50,7 +50,7 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public Optional<List<Message>> findBySenderIdOrReceiverId(Long senderId, Long receiverId) {
-        String sql = "SELECT * FROM user_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)";
+        String sql = "SELECT * FROM user_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY created_at ";
 
         Object[] params = new Object[]{senderId, receiverId, receiverId, senderId};
 

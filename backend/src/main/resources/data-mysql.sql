@@ -95,10 +95,10 @@ VALUES (1, 2),
        (5, 4);
 
 INSERT INTO `user_messages` (`id`, `sender_id`, `receiver_id`, `content`, `created_at`)
-VALUES (1, 1, 2, 'Hello, My name is An, nice to meet you!', '2021-06-12T17:17:38'),
-       (2, 2, 1, 'Hi! My name is Nguyen, nice to meet you too', '2021-06-12T17:20:38'),
-       (3, 4, 5, 'Hi! Nice to meet you too', '2021-06-12T17:20:38'),
-       (4, 5, 4, 'Hello! Nice to meet you too', '2021-06-12T17:20:38'),
-       (5, 1, 2, 'Hehe, so glad for your answer', '2021-06-12T17:20:38'),
-       (6, 4, 1, 'Hi! Nice to meet you too', '2021-05-12T17:20:38'),
-       (7, 5, 1, 'Hi! Nice to meet you too', '2021-07-2T17:20:38');
+VALUES (1, 1, 2, N'Hello, My name is An, nice to meet you!', '2021-06-12T17:17:38'),
+       (2, 2, 1, N'Hi! My name is Nguyen, nice to meet you too', '2021-06-12T17:20:38'),
+       (3, 4, 5, N'Hi! Nice to meet you too', '2021-06-12T17:20:38'),
+       (4, 5, 4, N'Hello! Nice to meet you too', '2021-06-12T17:20:38'),
+       (5, 1, 2, N'Hehe, so glad for your answer', '2021-06-12T17:25:38'),
+       (6, 4, 1, N'Hi! Nice to meet you too', '2021-05-12T17:20:38'),
+       (7, 5, 1, N'Hi! Nice to meet you too', '2021-07-2T17:20:38');
