@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  mysql-container:
+    image: mysql:latest
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=social_app"
+      - "MYSQL_PASSWORD=root"
+      - "TZ=Asia/Ho_Chi_Minh"
+    ports:
+      - "6603:3306"
+    volumes:
+      - /data/mysql
+
+    restart: always
+    cap_add:
+      - SYS_NICE
+
+  spring-boot-app:
+    image: spring-boot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container:3306/social_app?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - "mysql-container"
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - /data/spring-boot-app
+
+  vertx-socket-app:
+    image: vertx-socket-app
+    build:
+      context: ./vertx-socket
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - /data/vertx-socket-app
+
+  react-js-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_PUBLIC_FOLDER=http://localhost:3000/assets/
+        - REACT_APP_API_URL=http://localhost:8080/api/v1
+    ports:
+      - "3000:3000"
+    volumes:
+      - /data/react-js-app

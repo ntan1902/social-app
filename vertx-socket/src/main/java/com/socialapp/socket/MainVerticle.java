@@ -1,4 +1,5 @@
-import io.vertx.core.AbstractVerticle;
+package com.socialapp.socket;
+
 import io.vertx.core.Vertx;
 
 public class MainVerticle {

@@ -1,7 +1,8 @@
+package com.socialapp.socket;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
@@ -91,7 +92,6 @@ public class ServerVerticle extends AbstractVerticle {
             log.error(e);
         }
 
-//        vertx.eventBus().publish(MESSAGE_ADDRESS, new JsonObject().put("data", "Server received message!"));
     }
 
     private void handleLogin(Message<JsonObject> message, String action, JsonObject data) {
@@ -102,6 +102,7 @@ public class ServerVerticle extends AbstractVerticle {
     private void handleSendMessage(Message<JsonObject> message, String action, JsonObject data) {
         log.info("Handle SendMessage -> {}", data);
         vertx.eventBus().publish(MESSAGE_ADDRESS + data.getString("receiverId"), data);
+        message.reply(new JsonObject());
     }
 
 

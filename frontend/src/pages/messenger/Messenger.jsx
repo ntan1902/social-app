@@ -52,11 +52,7 @@ export default function Messenger() {
         }
 
         function onMessageReceived(payload) {
-            console.log(payload)
-
             const message = JSON.parse(payload.body);
-
-            console.log(message)
             setArrivalMessage(message)
         }
 
@@ -107,7 +103,7 @@ export default function Messenger() {
 
         const res = await messageApi.createMessage(message);
 
-        console.log(res)
+        // Publish to socket server
         publish({
             action: "send-message",
             data: res
