@@ -24,13 +24,13 @@ public class FollowController {
 
     @PostMapping
     public ResponseEntity<?> insertFollow(@RequestBody Follow follow){
-        followService.insertFollow(follow);
+        followService.insert(follow);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}/{following-id}")
     public ResponseEntity<?> deleteFollow(@PathVariable("id") Long id ,@PathVariable("following-id") Long followingId){
-        followService.deleteFollow(id, followingId);
+        followService.delete(id, followingId);
         return ResponseEntity.noContent().build();
     }
 }

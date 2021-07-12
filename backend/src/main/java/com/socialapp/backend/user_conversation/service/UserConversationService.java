@@ -1,6 +1,6 @@
-package com.socialapp.backend.user_conversations.service;
+package com.socialapp.backend.user_conversation.service;
 
-import com.socialapp.backend.user_conversations.entity.UserConversation;
+import com.socialapp.backend.user_conversation.entity.UserConversation;
 
 import java.util.List;
 

@@ -14,13 +14,15 @@ import io.vertx.ext.stomp.StompServerOptions;
 import io.vertx.ext.web.handler.StaticHandler;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class ServerVerticle extends AbstractVerticle {
     private static final String API_ADDRESS = "api.data";
     private static final String MESSAGE_ADDRESS_REGEX = "^message.data.*";
     private static final String MESSAGE_ADDRESS = "message.data.";
+    private static final Set<String> USERS = new HashSet<>();
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
@@ -82,6 +84,7 @@ public class ServerVerticle extends AbstractVerticle {
                 case "login":
                     handleLogin(message, action, data);
                     break;
+
                 case "send-message":
                     handleSendMessage(message, action, data);
                     break;
@@ -96,6 +99,12 @@ public class ServerVerticle extends AbstractVerticle {
 
     private void handleLogin(Message<JsonObject> message, String action, JsonObject data) {
         log.info("Handle Login -> {}", data);
+
+        USERS.add(data.getString("userId"));
+        JsonObject response = new JsonObject().put("users", new ArrayList<>(USERS));
+        vertx.eventBus().publish(MESSAGE_ADDRESS + "get-users", response);
+        log.info("Send List Users -> {}", response);
+
         message.reply("Logged in");
     }
 

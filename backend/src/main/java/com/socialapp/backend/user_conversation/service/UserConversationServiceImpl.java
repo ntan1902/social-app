@@ -1,13 +1,12 @@
-package com.socialapp.backend.user_conversations.service;
+package com.socialapp.backend.user_conversation.service;
 
-import com.socialapp.backend.user_conversations.entity.UserConversation;
-import com.socialapp.backend.user_conversations.repository.UserConversationRepository;
+import com.socialapp.backend.user_conversation.entity.UserConversation;
+import com.socialapp.backend.user_conversation.repository.UserConversationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

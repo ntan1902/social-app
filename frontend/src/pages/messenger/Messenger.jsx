@@ -9,6 +9,7 @@ import {AuthContext} from "../../context/AuthContext";
 import conversationApi from "../../api/ConversationApi";
 import messageApi from "../../api/MessageApi";
 import Stomp from "stompjs";
+import friendApi from "../../api/FriendApi";
 
 export default function Messenger() {
     const [conversations, setConversations] = useState([]);
@@ -16,54 +17,11 @@ export default function Messenger() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [arrivalMessage, setArrivalMessage] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     const {user} = useContext(AuthContext);
     const scrollRef = useRef();
-
-
     const stompClient = useRef();
-
-    // Connect to web socket
-    useEffect(() => {
-        const connect = () => {
-            const url = "ws://localhost:8081/stomp";
-            stompClient.current = Stomp.client(url);
-            stompClient.current.debug = null;
-            stompClient.current.connect({}, onConnected, onError);
-        }
-
-        function onConnected() {
-            console.log("Connected!!!")
-
-            publish({
-                action: "login",
-                data: {
-                    userId: user.id
-                }
-            })
-
-            // Subscribe to the Public Topic
-            stompClient.current.subscribe(`message.data.${user.id}`, onMessageReceived);
-
-        }
-
-        function onError(err) {
-            console.log(err);
-        }
-
-        function onMessageReceived(payload) {
-            const message = JSON.parse(payload.body);
-            setArrivalMessage(message)
-        }
-
-        connect();
-    }, [user.id])
-
-    // Publish to Server
-    const publish = (payload) => {
-        if (stompClient.current)
-            stompClient.current.send("api.data", {}, JSON.stringify(payload))
-    }
 
 
     useEffect(() => {
@@ -92,6 +50,58 @@ export default function Messenger() {
     useEffect(() => {
         scrollRef.current?.scrollIntoView({behavior: "smooth"});
     }, [messages]);
+
+    // Connect to web socket
+    useEffect(() => {
+        const connect = () => {
+            const url = "ws://localhost:8081/stomp";
+            stompClient.current = Stomp.client(url);
+            stompClient.current.debug = null;
+            stompClient.current.connect({}, onConnected, onError);
+        }
+
+        function onConnected() {
+            console.log("Connected!!!")
+
+            // Subscribe to the Public Topic
+            stompClient.current.subscribe(`message.data.${user.id}`, onMessageReceived);
+            stompClient.current.subscribe(`message.data.get-users`, onGetUsersReceived);
+
+            // Send message to server
+            publish({
+                action: "login",
+                data: {
+                    userId: user.id
+                }
+            })
+        }
+
+        const onError = (err)  =>{
+            console.log(err);
+        }
+
+        const onMessageReceived = (payload) => {
+            const message = JSON.parse(payload.body);
+            setArrivalMessage(message)
+        }
+
+        const onGetUsersReceived = async (payload) => {
+            const message = JSON.parse(payload.body);
+
+            const friends = await friendApi.getFriends(user.id);
+            setOnlineUsers(friends.filter((f) => message.users.includes(""+f.friendId)))
+        }
+
+        connect();
+    }, [user.id])
+
+    // Publish to Server
+    const publish = (payload) => {
+        if (stompClient.current)
+            stompClient.current.send("api.data", {}, JSON.stringify(payload))
+    }
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -158,9 +168,11 @@ export default function Messenger() {
                 </div>
                 <div className={"chatOnline"}>
                     <div className={"chatOnlineWrapper"}>
-                        <ChatOnline/>
-                        <ChatOnline/>
-                        <ChatOnline/>
+                        {
+                            onlineUsers.map(online => (
+                                <ChatOnline key={online.friendId} onlineUserId={online.friendId}/>
+                            ))
+                        }
                     </div>
                 </div>
             </div>

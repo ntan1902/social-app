@@ -1,15 +1,25 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import "./chatOnline.css"
+import userApi from "../../api/UserApi";
 
-export default function ChatOnline() {
+export default function ChatOnline({onlineUserId}) {
+    const [friend, setFriend] = useState(null);
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    useEffect(() => {
+        const fetchUser = async () => {
+            const res = await userApi.getById(onlineUserId);
+            setFriend(res);
+        }
+        fetchUser()
+    }, [onlineUserId])
     return (
         <div className={"chatOnline"}>
             <div className={"chatOnlineFriend"}>
                 <div className={"chatOnlineImgContainer"}>
-                    <img className={"chatOnlineImg"} src={"https://images.pexels.com/photos/3310693/pexels-photo-3310693.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"} alt={""}/>
+                    <img className={"chatOnlineImg"} src={friend?.profilePicture || PF + "person/noAvatar.png"} alt={""}/>
                     <div className={"chatOnlineBadge"}/>
                 </div>
-                <span className={"chatOnlineName"}>John Doe</span>
+                <span className={"chatOnlineName"}>{friend?.username}</span>
             </div>
         </div>
     )

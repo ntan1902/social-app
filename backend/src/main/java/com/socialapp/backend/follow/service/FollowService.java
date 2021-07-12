@@ -5,9 +5,9 @@ import com.socialapp.backend.follow.entity.Follow;
 import java.util.List;
 
 public interface FollowService {
-    void insertFollow(Follow follow);
+    void insert(Follow follow);
 
-    void deleteFollow(Long id, Long followingId);
+    void delete(Long id, Long followingId);
 
     List<Follow> findFollowings(Long id);
 }

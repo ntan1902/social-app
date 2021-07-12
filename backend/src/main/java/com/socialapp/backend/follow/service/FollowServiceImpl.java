@@ -19,7 +19,7 @@ public class FollowServiceImpl implements FollowService {
     private final UserRepository userRepository;
 
     @Override
-    public void insertFollow(Follow follow) {
+    public void insert(Follow follow) {
         log.info("Inside insertFollow of FollowServiceImpl");
         checkValidUserId(follow.getUserId(), follow.getFollowingId());
 
@@ -32,7 +32,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public void deleteFollow(Long id, Long followingId) {
+    public void delete(Long id, Long followingId) {
         log.info("Inside deleteFollow of FollowServiceImpl");
         checkValidUserId(id, followingId);
 

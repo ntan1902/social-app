@@ -1,4 +1,4 @@
-package com.socialapp.backend.user_conversations.entity;
+package com.socialapp.backend.user_conversation.entity;
 
 import lombok.*;
 

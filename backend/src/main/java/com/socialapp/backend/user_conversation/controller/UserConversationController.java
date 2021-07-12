@@ -1,7 +1,7 @@
-package com.socialapp.backend.user_conversations.controller;
+package com.socialapp.backend.user_conversation.controller;
 
-import com.socialapp.backend.user_conversations.entity.UserConversation;
-import com.socialapp.backend.user_conversations.service.UserConversationService;
+import com.socialapp.backend.user_conversation.entity.UserConversation;
+import com.socialapp.backend.user_conversation.service.UserConversationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
