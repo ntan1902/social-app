@@ -1,8 +1,8 @@
 package com.socialapp.backend.user.repository.impl;
 
-import com.socialapp.backend.user.repository.UserRepository;
-import com.socialapp.backend.user.repository.UserRepositoryImpl;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.UserRepository;
+import com.socialapp.backend.user.UserRepositoryImpl;
+import com.socialapp.backend.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

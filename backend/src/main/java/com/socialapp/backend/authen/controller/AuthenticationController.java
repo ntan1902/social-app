@@ -2,8 +2,7 @@ package com.socialapp.backend.authen.controller;
 
 import com.socialapp.backend.authen.dto.*;
 import com.socialapp.backend.authen.service.AuthenticationUserService;
-import com.socialapp.backend.user.dto.UserDTO;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;

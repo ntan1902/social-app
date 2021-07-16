@@ -2,7 +2,7 @@ package com.socialapp.backend.authen.jwt;
 
 
 import com.socialapp.backend.authen.service.AuthenticationUserService;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.User;
 import com.socialapp.backend.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

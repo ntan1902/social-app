@@ -15,7 +15,6 @@ import io.vertx.ext.web.handler.StaticHandler;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class ServerVerticle extends AbstractVerticle {

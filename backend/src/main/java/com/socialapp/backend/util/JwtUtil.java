@@ -1,6 +1,6 @@
 package com.socialapp.backend.util;
 
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.User;
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;

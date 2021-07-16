@@ -1,9 +1,8 @@
 package com.socialapp.backend.authen.dto;
 
-import com.socialapp.backend.user.dto.UserDTO;
+import com.socialapp.backend.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @AllArgsConstructor

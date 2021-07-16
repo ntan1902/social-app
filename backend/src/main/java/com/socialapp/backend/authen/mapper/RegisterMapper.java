@@ -1,7 +1,7 @@
 package com.socialapp.backend.authen.mapper;
 
 import com.socialapp.backend.authen.dto.RegisterRequest;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.User;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 

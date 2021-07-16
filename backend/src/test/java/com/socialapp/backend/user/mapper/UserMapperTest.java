@@ -1,7 +1,8 @@
 package com.socialapp.backend.user.mapper;
 
-import com.socialapp.backend.user.dto.UserDTO;
-import com.socialapp.backend.user.entity.User;
+import com.socialapp.backend.user.UserDTO;
+import com.socialapp.backend.user.User;
+import com.socialapp.backend.user.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 

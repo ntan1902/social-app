@@ -55,12 +55,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/login").permitAll()
-                .antMatchers("/api/v1/auth/register").permitAll()
-                .antMatchers("/api/v1/auth/refresh-token").permitAll()
-                .antMatchers("/api/v1/posts/images/**").permitAll()
-                .anyRequest().authenticated();
-//               .anyRequest().permitAll();
+//                .antMatchers("/api/v1/auth/login").permitAll()
+//                .antMatchers("/api/v1/auth/register").permitAll()
+//                .antMatchers("/api/v1/auth/refresh-token").permitAll()
+//                .antMatchers("/api/v1/posts/images/**").permitAll()
+//                .anyRequest().authenticated();
+               .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
