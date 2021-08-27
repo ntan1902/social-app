@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Log4j2
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin({"http://localhost:3000", "http://localhost:3001"})
 public class AuthenticationController {
 
     private final AuthenticationUserService authenticationUserService;

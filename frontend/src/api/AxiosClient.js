@@ -12,7 +12,7 @@ const axiosClient = axios.create({
 const refresh = () => {
     const _refreshToken = localStorage.getItem("refreshToken");
     try {
-        return  axiosClient.post("/auth/refresh-token", {refreshToken: _refreshToken})
+        return axiosClient.post("/auth/refresh-token", {refreshToken: _refreshToken})
 
     } catch (err) {
         console.log(err)
@@ -47,7 +47,7 @@ axiosClient.interceptors.response.use(response => {
         return response.data;
     }
 }, async error => {
-    if(error.response) {
+    if (error.response) {
         const {status} = error.response.data;
         if (status === 401) {
             return refresh().then(rs => {
