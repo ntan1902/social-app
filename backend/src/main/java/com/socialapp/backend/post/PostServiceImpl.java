@@ -27,28 +27,22 @@ public class PostServiceImpl implements PostService {
     private final UserMapper userMapper;
 
     @Override
-    public PostDTO insertPost(PostDTO postDTO) {
+    public void insertPost(PostDTO postDTO) {
         log.info("Inside insertPost of PostServiceImpl");
 
         Post post = this.postMapper.map(postDTO);
 
-        return this.postMapper.map(
-                this.postRepository.insert(post)
-                        .orElseThrow(() -> new ApiResponseException("Can't insert post"))
-        );
+        this.postRepository.insert(post);
     }
 
     @Override
-    public PostDTO updatePost(Long id, PostDTO postDTO) {
+    public void updatePost(Long id, PostDTO postDTO) {
 
         log.info("Inside updatePost of PostServiceImpl");
 
         Post post = this.postMapper.map(postDTO);
 
-        return this.postMapper.map(
-                this.postRepository.update(post)
-                        .orElseThrow(() -> new ApiResponseException("Can't update post"))
-        );
+        this.postRepository.update(post);
     }
 
     @Override

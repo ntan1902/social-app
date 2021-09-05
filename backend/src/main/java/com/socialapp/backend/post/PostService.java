@@ -5,9 +5,9 @@ import com.socialapp.backend.user.UserDTO;
 import java.util.List;
 
 public interface PostService {
-    PostDTO insertPost(PostDTO postDTO);
+    void insertPost(PostDTO postDTO);
 
-    PostDTO updatePost(Long id, PostDTO postDTO);
+    void updatePost(Long id, PostDTO postDTO);
 
     void deletePostById(Long id);
 

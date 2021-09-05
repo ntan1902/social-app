@@ -1,6 +1,10 @@
 package com.socialapp.backend.user;
 
+import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.authen.dto.TokenRefreshRequest;
+import com.socialapp.backend.authen.dto.TokenRefreshResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +18,25 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+       this.userService.register(registerRequest);
+        return new ResponseEntity<>("Register successfully", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String refreshToken = request.getRefreshToken();
+
+        TokenRefreshResponse tokenRefreshResponse = this.userService.refreshToken(refreshToken);
+
+        return ResponseEntity.ok(tokenRefreshResponse);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO) {
-        UserDTO res = this.userService.updateUser(id, userDTO);
-        return ResponseEntity.ok(res);
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO) {
+        this.userService.updateUser(id, userDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

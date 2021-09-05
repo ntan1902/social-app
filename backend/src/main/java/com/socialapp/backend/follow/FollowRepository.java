@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository {
-    void insert(Follow follow);
+    int insert(Follow follow);
 
-    void delete(Long id, Long followingId);
+    int delete(Long id, Long followingId);
 
     boolean isUserInFollowings(Long id, Long userId);
 

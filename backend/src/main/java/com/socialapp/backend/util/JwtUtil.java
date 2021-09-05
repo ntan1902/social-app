@@ -60,6 +60,13 @@ public class JwtUtil {
         return Long.parseLong(claims.getSubject());
     }
 
+    public List<String> getRolesFromJwt(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("roles", List.class);
+    }
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);

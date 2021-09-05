@@ -1,5 +1,8 @@
 package com.socialapp.backend.user;
 
+import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.authen.dto.TokenRefreshResponse;
+import com.socialapp.backend.authen.mapper.RegisterMapper;
 import com.socialapp.backend.exception.user.ApiResponseException;
 import com.socialapp.backend.follow.FollowRepository;
 import com.socialapp.backend.follow.Follow;
@@ -7,8 +10,14 @@ import com.socialapp.backend.like.LikeRepository;
 import com.socialapp.backend.like.Like;
 import com.socialapp.backend.post.PostRepository;
 import com.socialapp.backend.post.Post;
+import com.socialapp.backend.refresh_token.RefreshToken;
+import com.socialapp.backend.refresh_token.RefreshTokenService;
+import com.socialapp.backend.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +27,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Log4j2
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
@@ -28,18 +37,42 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserPostMapper userPostMapper;
+    private final RegisterMapper registerMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtUtil jwtUtil;
 
+    // ---- UserDetailsService ----
+    @Override
+    public UserDetails loadUserByUsername(String email) {
+        log.info("Inside loadUserByUsername of AuthenticationUserService");
+
+        return this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiResponseException("User " + email + " is not found"));
+
+    }
+    // ---- UserDetailsService ----
+
+    // Used by JwtAuthenticationFilter.class
+    public User loadUserById(Long userId) {
+        log.info("Inside loadUserById of AuthenticationUserService");
+
+        return this.userRepository.findById(userId)
+                .orElseThrow(() -> new ApiResponseException("User id " + userId + " is not found"));
+    }
 
     @Override
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
+    public void updateUser(Long id, UserDTO userDTO) {
         log.info("Inside updateUser of UserServiceImpl");
 
         User user = userMapper.map(userDTO);
 
-        return this.userMapper.map(
-                this.userRepository.update(user)
-                        .orElseThrow(() -> new ApiResponseException("Can't update user"))
-        );
+        int res = this.userRepository.update(user);
+        if (res == 1) {
+            log.info("Updated successfully");
+        } else {
+            log.error("Updated error");
+        }
     }
 
     @Override
@@ -107,9 +140,9 @@ public class UserServiceImpl implements UserService {
         // For each follow, get all information of following user
         follows.forEach(follow -> {
 
-            User following_user = userRepository.findById(follow.getFollowingId())
+            User followingUser = userRepository.findById(follow.getFollowingId())
                     .orElse(null);
-            res.add(userMapper.map(following_user));
+            res.add(userMapper.map(followingUser));
         });
         return res;
     }
@@ -135,4 +168,36 @@ public class UserServiceImpl implements UserService {
         return res;
     }
 
+    @Override
+    public void register(RegisterRequest registerRequest) {
+        log.info("Inside register of UserServiceImpl");
+
+        User user = registerMapper.map(registerRequest);
+        user.setPassword(
+                passwordEncoder.encode(registerRequest.getPassword())
+        );
+        user.setUserRole(UserRole.USER);
+
+        int res = this.userRepository.insert(user);
+        if (res == 1) {
+            log.info("Register successfully");
+        } else {
+            log.error("Register error");
+        }
+    }
+
+    @Override
+    public TokenRefreshResponse refreshToken(String token) {
+        log.info("Inside refreshToken of UserServiceImpl");
+
+        RefreshToken refreshToken = refreshTokenService.findByToken(token);
+
+        refreshTokenService.validateToken(refreshToken);
+
+        String jwt = jwtUtil.generateToken(
+                this.loadUserById(refreshToken.getUserId())
+        );
+
+        return new TokenRefreshResponse(jwt, token, "Bearer");
+    }
 }
