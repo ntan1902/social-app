@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository{
-    Optional<Post> insert(Post post);
+    int insert(Post post);
 
-    Optional<Post> update(Post post);
+    int update(Post post);
 
-    void deleteById(Long id);
+    int deleteById(Long id);
 
     Optional<Post> findById(Long id);
 

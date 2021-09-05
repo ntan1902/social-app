@@ -11,66 +11,52 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class PostRepositoryImpl implements PostRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<Post> insert(Post post) {
+    public int insert(Post post) {
         String sql = "INSERT INTO posts(`user_id`, `description`, `img`) VALUES (:userId, :description, :img)";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(post);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        int key = template.update(sql, params, keyHolder);
-        if (key != 0) {
-            return Optional.of(
-                    this.findById(
-                            keyHolder.getKey().longValue()
-                    ).get()
-            );
-        } else {
-            return Optional.empty();
-        }
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
-    public Optional<Post> update(Post post) {
+    public int update(Post post) {
         String sql = "UPDATE posts SET description=:description, img=:img WHERE id = :id AND user_id=:userId";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(post);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        int key = template.update(sql, params);
-        if (key != 0) {
-            return Optional.of(
-                    this.findById(
-                            keyHolder.getKey().longValue()
-                    ).get()
-            );
-        } else {
-            return Optional.empty();
-        }
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM posts WHERE id=?";
-        this.jdbcTemplate.update(sql, id);
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM posts WHERE id=:id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return this.jdbcTemplate.update(sql, params);
     }
 
     @Override
     public Optional<Post> findById(Long id) {
-        String sql = "SELECT * FROM posts WHERE id=?";
-        Object[] params = new Object[]{id};
+        String sql = "SELECT * FROM posts WHERE id=:id";
 
-        Post post = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Post.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        Post post = jdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(Post.class));
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -81,10 +67,12 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Optional<List<Post>> findAllByUserId(Long userId) {
-        String sql = "SELECT * FROM posts WHERE user_id=?";
-        Object[] params = new Object[]{userId};
+        String sql = "SELECT * FROM posts WHERE user_id=:userId";
 
-        List<Post> posts = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Post.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+
+        List<Post> posts = jdbcTemplate.query(sql, params,  BeanPropertyRowMapper.newInstance(Post.class) );
         return Optional.of(posts);
     }
 

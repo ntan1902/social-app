@@ -16,15 +16,12 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
 
     @Override
-    public MessageDTO insert(MessageDTO messageDTO) {
+    public void insert(MessageDTO messageDTO) {
         log.info("Inside insert of MessageServiceImpl");
 
         Message message = this.messageMapper.map(messageDTO);
 
-        return this.messageMapper.map(
-                this.messageRepository.insert(message)
-                        .orElseThrow(() -> new IllegalArgumentException("Can't insert message"))
-        );
+        this.messageRepository.insert(message);
     }
 
     @Override

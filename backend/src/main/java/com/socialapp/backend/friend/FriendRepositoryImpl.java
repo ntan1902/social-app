@@ -9,46 +9,58 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import javax.naming.Name;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class FriendRepositoryImpl implements FriendRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public void insert(Friend friend) {
+    public int insert(Friend friend) {
         String sql = "INSERT INTO friends(`user_id`, `friend_id`) VALUES (:userId, :friendId)";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(friend);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        template.update(sql, params);
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
-    public void delete(Long id, Long friendId) {
-        String sql = "DELETE FROM `friends` WHERE user_id = ? AND friend_id = ?";
-        jdbcTemplate.update(sql, id, friendId);
+    public int delete(Long id, Long friendId) {
+        String sql = "DELETE FROM `friends` WHERE user_id = :userId AND friend_id = :friendId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", id);
+        params.put("friendId", friendId);
+
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
     public boolean isUserInFriends(Long id, Long friendId) {
-        String sql = "SELECT COUNT(*) FROM `friends` WHERE user_id = ? AND friend_id = ?";
-        Object[] params = new Object[]{id, friendId};
+        String sql = "SELECT COUNT(*) FROM `friends` WHERE user_id = :userId AND friend_id = :friendId";
 
-        Integer num = jdbcTemplate.queryForObject(sql, Integer.class, params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", id);
+        params.put("friendId", friendId);
 
-        return num != 0;
+        Integer num = jdbcTemplate.queryForObject(sql, params, Integer.class);
+
+        return num != null && num > 0;
     }
 
     @Override
     public Optional<List<Friend>> findAllByUserId(Long id) {
-        String sql = "SELECT * FROM `friends` WHERE user_id = ?";
-        Object[] params = new Object[]{id};
+        String sql = "SELECT * FROM `friends` WHERE user_id = :userId";
 
-        List<Friend> res = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Friend.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", id);
+
+        List<Friend> res = jdbcTemplate.query(sql, params, BeanPropertyRowMapper.newInstance(Friend.class));
         return Optional.of(res);
     }
 }

@@ -1,11 +1,14 @@
 package com.socialapp.backend.user;
 
 
+import com.socialapp.backend.authen.dto.RegisterRequest;
+import com.socialapp.backend.authen.dto.TokenRefreshResponse;
+
 import java.util.List;
 
 public interface UserService {
 
-    UserDTO updateUser(Long id, UserDTO user);
+    void updateUser(Long id, UserDTO user);
 
     void deleteById(Long id);
 
@@ -19,4 +22,7 @@ public interface UserService {
 
     List<UserPostDTO> findAllFriendPosts(Long id);
 
+    void register(RegisterRequest registerRequest);
+
+    TokenRefreshResponse refreshToken(String token);
 }

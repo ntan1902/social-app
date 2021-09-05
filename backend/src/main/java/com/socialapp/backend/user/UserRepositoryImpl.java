@@ -2,72 +2,66 @@ package com.socialapp.backend.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @Transactional
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
-    private final JdbcTemplate jdbcTemplate;
+public class UserRepositoryImpl implements UserRepository{
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
     public Optional<User> findByUsername(String username) {
-        String sql = "SELECT * FROM users u WHERE u.username = ?";
-        Object[] params = new Object[]{username};
+        String sql = "SELECT * FROM users u WHERE u.username = :username";
 
-        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("username", username);
+
+        User user = jdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(User.class));
         return Optional.ofNullable(user);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT * FROM users u WHERE u.email = ?";
-        Object[] params = new Object[]{email};
+        String sql = "SELECT * FROM users u WHERE u.email = :email";
 
-        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+
+        User user = jdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(User.class));
         return Optional.ofNullable(user);
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        String sql = "SELECT * FROM users u WHERE u.id = ?";
-        Object[] params = new Object[]{id};
+        String sql = "SELECT * FROM users u WHERE u.id = :id";
 
-        User user = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+
+        User user = jdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(User.class));
         return Optional.ofNullable(user);
     }
 
     @Override
-    public Optional<User> insert(User user) {
+    public int insert(User user) {
         String sql = "INSERT INTO users(username, `password`, email, `profile_picture`, `cover_picture`, `description`, `city`, `from_city`) " +
                 "VALUES (:username, :password, :email, :profilePicture, :coverPicture, :description, :city, :fromCity)";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        int key = template.update(sql, params, keyHolder);
-        if (key != 0) {
-            return Optional.of(
-                    this.findById(
-                            keyHolder.getKey().longValue()
-                    ).get()
-            );
-        } else {
-            return Optional.empty();
-        }
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
-    public Optional<User> update(User user) {
+    public int update(User user) {
         String sql = "UPDATE users u " +
                 "SET " +
                 "u.username = :username, " +
@@ -81,31 +75,28 @@ public class UserRepositoryImpl implements UserRepository {
                 "u.id = :id ";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        int key = template.update(sql, params, keyHolder);
-        if (key != 0) {
-            user.setId(keyHolder.getKey().longValue());
-            return Optional.of(user);
-        } else {
-            return Optional.empty();
-        }
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM `users` WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM `users` WHERE id = :id";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return jdbcTemplate.update(sql, params);
     }
 
     @Override
     public List<User> findFollowings(Long id) {
         String sql = "SELECT followed_user.* " +
                 "FROM users user, `follows` fol, users followed_user " +
-                "WHERE user.id = ? AND user.id = fol.user_id AND followed_user.id = fol.following_id";
-        Object[] params = new Object[]{id};
+                "WHERE user.id = :id AND user.id = fol.user_id AND followed_user.id = fol.following_id";
 
-        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(User.class), params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return jdbcTemplate.query(sql, params, BeanPropertyRowMapper.newInstance(User.class));
     }
 }

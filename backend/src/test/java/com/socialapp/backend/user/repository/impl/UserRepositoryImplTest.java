@@ -66,10 +66,10 @@ class UserRepositoryImplTest {
         User user = User.builder().username("annt12").email("annt12@vng.com.vn").build();
 
         // when
-        Optional<User> optionalUser = underTest.insert(user);
+        int res = underTest.insert(user);
 
         // then
-        assertThat(optionalUser).contains(user);
+        assertThat(res).isEqualTo(1);
 
     }
 
@@ -81,13 +81,13 @@ class UserRepositoryImplTest {
         User user2 = User.builder().id(8L).username("annt12").email("annt12@vng.com.vn").build();
 
         // when
-        Optional<User> optionalUser = underTest.update(user);
+        int res1 = underTest.update(user);
 
-        Optional<User> empty = underTest.update(user2);
+        int res2 = underTest.update(user2);
 
         // then
-        assertThat(optionalUser.get().getUsername()).isEqualTo("annt12");
-        assertThat(empty).isEmpty();
+        assertThat(res1).isEqualTo(1);
+        assertThat(res2).isNotEqualTo(1);
     }
 
     @Test

@@ -37,15 +37,15 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO> insertPost(@RequestBody @Valid PostDTO postDTO) {
-        PostDTO res = this.postService.insertPost(postDTO);
-        return new ResponseEntity<>(res, HttpStatus.CREATED);
+    public ResponseEntity<?> insertPost(@RequestBody @Valid PostDTO postDTO) {
+        this.postService.insertPost(postDTO);
+        return new ResponseEntity<>("Insert post successfully", HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(@PathVariable("id") Long id, @RequestBody PostDTO postDTO) {
-        PostDTO res = this.postService.updatePost(id, postDTO);
-        return ResponseEntity.ok(res);
+    public ResponseEntity<?> updatePost(@PathVariable("id") Long id, @RequestBody PostDTO postDTO) {
+        this.postService.updatePost(id, postDTO);
+        return new ResponseEntity<>("Update post successfully", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")

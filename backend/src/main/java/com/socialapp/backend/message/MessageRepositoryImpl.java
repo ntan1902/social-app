@@ -11,49 +11,46 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class MessageRepositoryImpl implements MessageRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<Message> insert(Message message) {
+    public int insert(Message message) {
         String sql = "INSERT INTO user_messages(`sender_id`, `receiver_id`, `content`) VALUES (:senderId, :receiverId, :content)";
 
         SqlParameterSource params = new BeanPropertySqlParameterSource(message);
-        NamedParameterJdbcOperations template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        int key = template.update(sql, params, keyHolder);
-        if (key != 0) {
-            return Optional.of(findById(
-                    keyHolder.getKey().longValue()
-            ).get());
-        } else {
-            return Optional.empty();
-        }
+        return jdbcTemplate.update(sql, params);
+
     }
 
     @Override
     public Optional<Message> findById(Long id) {
-        String sql = "SELECT * FROM user_messages WHERE id=?";
+        String sql = "SELECT * FROM user_messages WHERE id=:id";
 
-        Object[] params = new Object[]{id};
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
 
-        Message message = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Message.class), params);
+        Message message = jdbcTemplate.queryForObject(sql, params, BeanPropertyRowMapper.newInstance(Message.class));
         return Optional.ofNullable(message);
     }
 
     @Override
     public Optional<List<Message>> findBySenderIdOrReceiverId(Long senderId, Long receiverId) {
-        String sql = "SELECT * FROM user_messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY created_at ";
+        String sql = "SELECT * FROM user_messages WHERE (sender_id = :senderId AND receiver_id = :receiverId) OR (sender_id = :senderId AND receiver_id = :receiverId) ORDER BY created_at ";
 
-        Object[] params = new Object[]{senderId, receiverId, receiverId, senderId};
+        Map<String, Object> params = new HashMap<>();
+        params.put("senderId", senderId);
+        params.put("receiverId", receiverId);
 
-        List<Message> messages = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Message.class), params);
+        List<Message> messages = jdbcTemplate.query(sql, params, BeanPropertyRowMapper.newInstance(Message.class));
         return Optional.of(messages);
     }
 
