@@ -3,8 +3,6 @@ package com.socialapp.backend.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.socialapp.backend.authen.dto.LoginRequest;
 import com.socialapp.backend.authen.dto.LoginResponse;
-import com.socialapp.backend.refresh_token.RefreshToken;
-import com.socialapp.backend.refresh_token.RefreshTokenService;
 import com.socialapp.backend.user.User;
 import com.socialapp.backend.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
@@ -27,9 +25,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -38,7 +33,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
             log.info("Inside login of CustomAuthenticationFilter: {}", loginRequest);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
+                    loginRequest.getUsername(),
                     loginRequest.getPassword()
             );
             return this.getAuthenticationManager().authenticate(token);
@@ -51,18 +46,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authResult) throws IOException {
         log.info("Authentication: {}", authResult);
 
         // Get User after Authenticate
         User user = (User) authResult.getPrincipal();
 
         // Set access token
-        String accessToken = jwtUtil.generateToken(user);
+        String accessToken = jwtUtil.generateAccessToken(user);
 
         // Set refresh token
-        RefreshToken refreshToken = refreshTokenService.insert(user.getId());
-        LoginResponse payload = new LoginResponse(accessToken, refreshToken.getToken(),"Bearer");
+        String refreshToken = jwtUtil.generateRefreshToken(user);
+        LoginResponse payload = new LoginResponse(accessToken, refreshToken, "Bearer");
 
         // Response to client
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

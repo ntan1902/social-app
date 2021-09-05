@@ -20,7 +20,7 @@ public class JwtUtil {
     private Long JWT_EXPIRATION;
 
 
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
 
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
@@ -33,10 +33,31 @@ public class JwtUtil {
             claims.put("isUser", true);
         }
 
-        return doGenerateToken(claims, user.getId().toString());
+        return doGenerateAccessToken(claims, user.getId().toString());
     }
 
-    public String doGenerateToken(Map<String, Object> claims, String subject) {
+    public String doGenerateAccessToken(Map<String, Object> claims, String subject) {
+        try {
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(subject)
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
+                    .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
+                    .compact();
+        } catch (Exception e) {
+            log.error(e);
+            return null;
+        }
+    }
+
+    public String generateRefreshToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", UUID.randomUUID().toString());
+        return doGenerateRefreshToken(claims, user.getId().toString());
+    }
+
+    private String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
         try {
             return Jwts.builder()
                     .setClaims(claims)

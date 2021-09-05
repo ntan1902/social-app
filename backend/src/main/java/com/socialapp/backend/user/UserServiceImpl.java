@@ -10,8 +10,6 @@ import com.socialapp.backend.like.LikeRepository;
 import com.socialapp.backend.like.Like;
 import com.socialapp.backend.post.PostRepository;
 import com.socialapp.backend.post.Post;
-import com.socialapp.backend.refresh_token.RefreshToken;
-import com.socialapp.backend.refresh_token.RefreshTokenService;
 import com.socialapp.backend.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,16 +37,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserPostMapper userPostMapper;
     private final RegisterMapper registerMapper;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenService refreshTokenService;
     private final JwtUtil jwtUtil;
 
     // ---- UserDetailsService ----
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public UserDetails loadUserByUsername(String username) {
         log.info("Inside loadUserByUsername of AuthenticationUserService");
 
-        return this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiResponseException("User " + email + " is not found"));
+        return this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new ApiResponseException("User " + username + " is not found"));
 
     }
     // ---- UserDetailsService ----
@@ -190,14 +187,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public TokenRefreshResponse refreshToken(String token) {
         log.info("Inside refreshToken of UserServiceImpl");
 
-        RefreshToken refreshToken = refreshTokenService.findByToken(token);
+        if (jwtUtil.validateToken(token)) {
+            Long userId = jwtUtil.getUserIdFromJwt(token);
+            String jwt = jwtUtil.generateAccessToken(
+                    this.loadUserById(userId)
+            );
+            return new TokenRefreshResponse(jwt, "Bearer");
+        } else {
+            throw new ApiResponseException("Invalid token");
+        }
 
-        refreshTokenService.validateToken(refreshToken);
-
-        String jwt = jwtUtil.generateToken(
-                this.loadUserById(refreshToken.getUserId())
-        );
-
-        return new TokenRefreshResponse(jwt, token, "Bearer");
     }
 }

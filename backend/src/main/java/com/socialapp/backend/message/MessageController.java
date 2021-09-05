@@ -17,7 +17,7 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody MessageDTO messageDTO) throws URISyntaxException {
+    public ResponseEntity<?> insert(@RequestBody MessageDTO messageDTO) {
         this.messageService.insert(messageDTO);
         return new ResponseEntity<>("Insert message successfully", HttpStatus.CREATED);
     }

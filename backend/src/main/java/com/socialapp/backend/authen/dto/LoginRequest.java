@@ -10,8 +10,8 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-    @NotEmpty(message = "email can not be empty")
-    private String email;
+    @NotEmpty(message = "username can not be empty")
+    private String username;
 
     @NotEmpty(message = "password can not be empty")
     private String password;
