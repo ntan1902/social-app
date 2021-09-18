@@ -25,4 +25,6 @@ public interface UserService {
     void register(RegisterRequest registerRequest);
 
     TokenRefreshResponse refreshToken(String token);
+
+    UserDTO findCurrentUserProfile();
 }

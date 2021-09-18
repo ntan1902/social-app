@@ -13,6 +13,7 @@ import com.socialapp.backend.post.Post;
 import com.socialapp.backend.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -197,5 +198,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new ApiResponseException("Invalid token");
         }
 
+    }
+
+    @Override
+    public UserDTO findCurrentUserProfile() {
+        log.info("Inside findCurrentUserProfile of UserServiceImpl");
+        return this.userMapper.map(
+                this.userRepository.findById(getCurrentUserId())
+                        .orElseThrow(() -> new ApiResponseException("Invalid user id"))
+        );
+    }
+
+    private Long getCurrentUserId() {
+        return (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

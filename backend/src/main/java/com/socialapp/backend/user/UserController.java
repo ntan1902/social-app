@@ -52,6 +52,12 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/me/profile")
+    public ResponseEntity<UserDTO> findProfile() {
+        UserDTO res = this.userService.findCurrentUserProfile();
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping
     public ResponseEntity<UserDTO> findUserByUsername(@RequestParam("username") String username) {
         UserDTO res = this.userService.findByUsername(username);

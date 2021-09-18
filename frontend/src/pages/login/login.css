@@ -85,8 +85,8 @@
 
 .registerButton {
   height: 50px;
-  width: 70%;
-  align-self: center;
+  width: 100%;
+  /* align-self: center; */
   border-radius: 10px;
   border: none;
   background-color: #42b72a;

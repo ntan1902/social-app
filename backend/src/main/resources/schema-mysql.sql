@@ -51,16 +51,6 @@ create table like_posts
     constraint fk_like_posts_users foreign key (user_id) references users (id) on delete cascade
 ) ENGINE InnoDB;
 
-create table refresh_tokens
-(
-    id          bigint auto_increment,
-    user_id     bigint,
-    token       varchar(255),
-    expiry_date datetime,
-    primary key (id),
-    constraint fk_refresh_tokens_users foreign key (user_id) references users (id) on delete cascade
-) ENGINE InnoDB;
-
 create table friends
 (
     user_id   bigint,

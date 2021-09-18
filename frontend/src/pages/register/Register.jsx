@@ -1,7 +1,8 @@
 import "./register.css";
-import {useRef} from "react";
-import {useHistory} from "react-router-dom"
+import { useRef } from "react";
+import { useHistory } from "react-router-dom";
 import authApi from "../../api/AuthApi";
+import { Link } from "react-router-dom";
 
 function Register() {
   const username = useRef();
@@ -12,23 +13,23 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(passwordAgain.current.value !== password.current.value) {
-      passwordAgain.current.setCustomValidity("Password don't match!")
+    if (passwordAgain.current.value !== password.current.value) {
+      passwordAgain.current.setCustomValidity("Password don't match!");
     } else {
       const user = {
         username: username.current.value,
         email: email.current.value,
-        password: password.current.value
-      }
-      try{
+        password: password.current.value,
+      };
+      try {
         const res = await authApi.register(user);
-        console.log(res)
-        history.push("/login")
+        console.log(res);
+        history.push("/login");
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     }
-  }
+  };
 
   return (
     <div className="register">
@@ -41,14 +42,43 @@ function Register() {
         </div>
         <div className="registerRight">
           <form className="registerBox" onSubmit={handleSubmit}>
-            <input placeholder="Username" required ref={username} className="registerInput" />
-            <input placeholder="Email" required type="email" ref={email} className="registerInput" />
-            <input placeholder="Password" required minLength="6" type="password" ref={password} className="registerInput" />
-            <input placeholder="Password again" required type="password" ref={passwordAgain} className="registerInput" />
-            <button className="signupButton">Sign up</button>
+            <input
+              placeholder="Username"
+              required
+              ref={username}
+              className="registerInput"
+            />
+            <input
+              placeholder="Email"
+              required
+              type="email"
+              ref={email}
+              className="registerInput"
+            />
+            <input
+              placeholder="Password"
+              required
+              minLength="6"
+              type="password"
+              ref={password}
+              className="registerInput"
+            />
+            <input
+              placeholder="Password again"
+              required
+              type="password"
+              ref={passwordAgain}
+              className="registerInput"
+            />
+            <button className="signupButton" type="submit">
+              Sign up
+            </button>
             <span className="registerForgot">Forgot Password ?</span>
             <hr />
-            <button className="gobackButton">Go back</button>
+
+            <Link to="/login" style={{ alignSelf: "center", width: "70%" }}>
+              <button className="gobackButton">Go back</button>{" "}
+            </Link>
           </form>
         </div>
       </div>
